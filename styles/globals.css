@@ -1,0 +1,189 @@
+@import "tailwindcss";
+
+/* ============================================================
+   DESIGN TOKENS — §4 of the brief
+   ============================================================ */
+
+:root {
+  /* Paper / notebook */
+  --paper: #ede1c8;
+  --paper-deep: #d9c8a6;
+  --paper-shadow: #b8a47e;
+  --paper-burn: #6e4a20;
+
+  /* Ink */
+  --ink: #2b1d10;
+  --ink-soft: #4a3520;
+  --ink-faded: #6e5235;
+
+  /* Body background */
+  --body-bg: #2a1f10;
+
+  /* Journeys (3 travel identities) */
+  --thunder: #6b1f2a;
+  --thunder-glow: #a83a48;
+  --guerin: #1f3a4a;
+  --guerin-glow: #3d6a82;
+  --solo: #8a5a2b;
+  --solo-glow: #c89554;
+
+  /* Capsule / cold scenes */
+  --crow-black: #0a0a0a;
+  --ice-blue: #c8d6dd;
+  --ice-white: #e8eef0;
+
+  /* Regional watercolor */
+  --region-pnw: #7a9466;
+  --region-sw: #c89554;
+  --region-rockies: #9a7a55;
+  --region-plains: #d8c074;
+  --region-midwest: #a8a45a;
+  --region-north: #8aa4b8;
+  --region-ne: #9a7a5a;
+  --region-south: #7a8a4a;
+  --region-texas: #b89464;
+  --region-florida: #6a9464;
+}
+
+/* ============================================================
+   RESET
+   ============================================================ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: auto; /* Lenis handles smooth scroll */
+}
+
+body {
+  min-height: 100vh;
+  background-color: var(--body-bg);
+  color: var(--ink);
+  font-family: var(--font-body), serif;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* ============================================================
+   SCROLLBAR
+   ============================================================ */
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--paper-deep);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--ink-faded);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--ink-soft);
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--ink-faded) var(--paper-deep);
+}
+
+/* ============================================================
+   REDUCED MOTION
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ============================================================
+   TAILWIND THEME EXTENSION
+   ============================================================ */
+
+@theme {
+  /* Paper */
+  --color-paper: #ede1c8;
+  --color-paper-deep: #d9c8a6;
+  --color-paper-shadow: #b8a47e;
+  --color-paper-burn: #6e4a20;
+
+  /* Ink */
+  --color-ink: #2b1d10;
+  --color-ink-soft: #4a3520;
+  --color-ink-faded: #6e5235;
+
+  /* Body */
+  --color-body-bg: #2a1f10;
+
+  /* Journeys */
+  --color-thunder: #6b1f2a;
+  --color-thunder-glow: #a83a48;
+  --color-guerin: #1f3a4a;
+  --color-guerin-glow: #3d6a82;
+  --color-solo: #8a5a2b;
+  --color-solo-glow: #c89554;
+
+  /* Capsule */
+  --color-crow-black: #0a0a0a;
+  --color-ice-blue: #c8d6dd;
+  --color-ice-white: #e8eef0;
+
+  /* Regions */
+  --color-region-pnw: #7a9466;
+  --color-region-sw: #c89554;
+  --color-region-rockies: #9a7a55;
+  --color-region-plains: #d8c074;
+  --color-region-midwest: #a8a45a;
+  --color-region-north: #8aa4b8;
+  --color-region-ne: #9a7a5a;
+  --color-region-south: #7a8a4a;
+  --color-region-texas: #b89464;
+  --color-region-florida: #6a9464;
+
+  /* Fonts */
+  --font-display: var(--font-italiana), serif;
+  --font-body: var(--font-im-fell-english), serif;
+  --font-body-alt: var(--font-cormorant-garamond), serif;
+  --font-mono: var(--font-courier-prime), monospace;
+  --font-hand: var(--font-reenie-beanie), cursive;
+  --font-hand-signature: var(--font-homemade-apple), cursive;
+}
