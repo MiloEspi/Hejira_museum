@@ -1,3 +1,5 @@
+import UmbralScene from "@/components/umbral/UmbralScene";
+
 export default function UmbralPage() {
-  return null;
+  return <UmbralScene />;
 }
