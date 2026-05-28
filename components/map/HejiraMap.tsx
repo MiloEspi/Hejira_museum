@@ -1,110 +1,119 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import {
   ComposableMap,
   Geographies,
   Geography,
-  Line,
   Marker,
 } from "react-simple-maps";
-import { SONGS, type Song } from "@/lib/songs-data";
-import { JOURNEYS, type Journey } from "@/lib/journey-data";
+import { geoAlbers } from "d3-geo";
+import { SONGS } from "@/lib/songs-data";
+
 import { ROUTES } from "@/lib/routes-coords";
 import SongMarker from "./SongMarker";
 import JourneyToggle from "./JourneyToggle";
 import MapLegend from "./MapLegend";
 import MapDetails from "./MapDetails";
 
-const TOPO_URL = "/maps/us-states-10m.json";
+const US_TOPO_URL = "/maps/us-states-10m.json";
+const WORLD_TOPO_URL = "/maps/countries-50m.json";
 
-/**
- * Region color mapping: assigns US states to watercolor regions.
- * Uses FIPS codes from the TopoJSON.
- */
-const STATE_REGION_COLORS: Record<string, string> = {
-  // Pacific NW — musgo
-  "53": "#7a9466", // Washington
-  "41": "#7a9466", // Oregon
-  // Desert SW — ocre
-  "04": "#c89554", // Arizona
-  "32": "#c89554", // Nevada
-  "35": "#c89554", // New Mexico
-  "06": "#c89554", // California
-  // Rockies — marrón rojizo
-  "30": "#9a7a55", // Montana
-  "16": "#9a7a55", // Idaho
-  "56": "#9a7a55", // Wyoming
-  "08": "#9a7a55", // Colorado
-  "49": "#9a7a55", // Utah
-  // Great Plains — amarillo trigo
-  "38": "#d8c074", // North Dakota
-  "46": "#d8c074", // South Dakota
-  "31": "#d8c074", // Nebraska
-  "20": "#d8c074", // Kansas
-  "40": "#d8c074", // Oklahoma
-  // Midwest — verde-amarillo
-  "27": "#a8a45a", // Minnesota
-  "19": "#a8a45a", // Iowa
-  "29": "#a8a45a", // Missouri
-  "17": "#a8a45a", // Illinois
-  "18": "#a8a45a", // Indiana
-  "39": "#a8a45a", // Ohio
-  // Great Lakes / Northern — azul invernal
-  "55": "#8aa4b8", // Wisconsin
-  "26": "#8aa4b8", // Michigan
-  // Northeast — sepia urbano
-  "09": "#9a7a5a", // Connecticut
-  "25": "#9a7a5a", // Massachusetts
-  "33": "#9a7a5a", // New Hampshire
-  "44": "#9a7a5a", // Rhode Island
-  "50": "#9a7a5a", // Vermont
-  "23": "#9a7a5a", // Maine
-  "36": "#9a7a5a", // New York
-  "34": "#9a7a5a", // New Jersey
-  "42": "#9a7a5a", // Pennsylvania
-  // Mid-Atlantic / Appalachian
-  "10": "#8a7a5a", // Delaware
-  "24": "#8a7a5a", // Maryland
-  "11": "#8a7a5a", // DC
-  "54": "#8a7a5a", // West Virginia
-  "51": "#8a7a5a", // Virginia
-  "37": "#8a7a5a", // North Carolina
-  "21": "#8a7a5a", // Kentucky
-  "47": "#8a7a5a", // Tennessee
-  // Deep South — verde húmedo
-  "01": "#7a8a4a", // Alabama
-  "28": "#7a8a4a", // Mississippi
-  "22": "#7a8a4a", // Louisiana
-  "05": "#7a8a4a", // Arkansas
-  "13": "#7a8a4a", // Georgia
-  "45": "#7a8a4a", // South Carolina
-  // Texas — ocre seco
-  "48": "#b89464", // Texas
-  // Florida — verde tropical
-  "12": "#6a9464", // Florida
-  // Hawaii (hidden but just in case)
-  "15": "#6a9464",
-  // Alaska
-  "02": "#8aa4b8",
+const MAP_WIDTH = 980;
+const MAP_HEIGHT = 720;
+
+/* ───────── Projection config ───────── */
+/* Shifted north & zoomed out slightly to show BC + Saskatchewan */
+const PROJECTION_CONFIG = {
+  rotate: [96, 0, 0] as [number, number, number],
+  center: [0, 46] as [number, number],
+  parallels: [29, 55] as [number, number],
+  scale: 820,
 };
 
-/** Get journey style config by slug */
-function getJourneyStyle(slug: string): { color: string; dasharray: string; width: number } {
-  const j = JOURNEYS.find((j) => j.slug === slug);
-  if (!j) return { color: "#888", dasharray: "none", width: 2 };
+/* ───────── Regional watercolor palette — high contrast ───────── */
+const STATE_REGION_COLORS: Record<string, string> = {
+  // Pacific NW — deep forest green
+  "53": "#5e8c52", "41": "#5e8c52",
+  // Southwest — warm terracotta / desert
+  "04": "#d4915a", "32": "#c89554", "35": "#cf8a4e", "06": "#daa060",
+  // Rockies — dusty slate brown
+  "30": "#8a7055", "16": "#8a7055", "56": "#8a7055", "08": "#96785a", "49": "#937a58",
+  // Great Plains — wheat gold
+  "38": "#dcc06a", "46": "#dcc06a", "31": "#d8b85e", "20": "#d4b456", "40": "#d0b050",
+  // Upper midwest — muted blue-green
+  "27": "#7e9a6a", "19": "#7e9a6a", "29": "#8a9060", "17": "#7e9a6a", "18": "#7e9a6a", "39": "#7e9a6a",
+  // Wisconsin/Michigan — cool blue
+  "55": "#6a98b4", "26": "#6a98b4",
+  // New England — amber brown
+  "09": "#a88050", "25": "#a88050", "33": "#a88050", "44": "#a88050", "50": "#a88050",
+  "23": "#a88050", "36": "#9a7a50", "34": "#9a7a50", "42": "#9a7a50",
+  // Mid-Atlantic / Appalachia — warm grey-green
+  "10": "#7a8a5a", "24": "#7a8a5a", "11": "#7a8a5a", "54": "#7a8a5a",
+  "51": "#7a8a5a", "37": "#7a8a5a", "21": "#7a8a5a", "47": "#7a8a5a",
+  // Deep South — rich moss
+  "01": "#5a7a3a", "28": "#5a7a3a", "22": "#5a7a3a", "05": "#5a7a3a", "13": "#5a7a3a", "45": "#5a7a3a",
+  // Texas — burnt sienna
+  "48": "#c08a54",
+  // Florida — tropical green
+  "12": "#4a8a54",
+  "15": "#4a8a54",
+  "02": "#6a98b4",
+};
 
-  const colorMap: Record<string, string> = {
-    thunder: "#6b1f2a",
-    guerin: "#1f3a4a",
-    solo: "#8a5a2b",
-  };
+/* ───────── Journey route styles ───────── */
+const JOURNEY_STYLES: Record<string, {
+  color: string;
+  dasharray: string;
+  width: number;
+  glow: string;
+  opacity: number;
+  fadeEnd?: boolean;
+}> = {
+  thunder: {
+    color: "#6b1f2a",
+    dasharray: "2,3",
+    width: 2.2,
+    glow: "rgba(107,31,42,0.35)",
+    opacity: 0.85,
+  },
+  guerin: {
+    color: "#1f3a4a",
+    dasharray: "6,5",
+    width: 2.2,
+    glow: "rgba(31,58,74,0.3)",
+    opacity: 0.75,
+    fadeEnd: true,
+  },
+  solo: {
+    color: "#8a5a2b",
+    dasharray: "",
+    width: 3,
+    glow: "rgba(138,90,43,0.3)",
+    opacity: 1,
+  },
+};
 
-  return {
-    color: colorMap[slug] || "#888",
-    dasharray: j.strokeDasharray === "none" ? "" : j.strokeDasharray,
-    width: 2.4,
-  };
+/* ───────── Catmull-Rom spline ───────── */
+function catmullRomSpline(points: [number, number][], tension = 0.5): string {
+  if (points.length < 2) return "";
+  if (points.length === 2) return `M${points[0][0]},${points[0][1]}L${points[1][0]},${points[1][1]}`;
+
+  let d = `M${points[0][0]},${points[0][1]}`;
+  for (let i = 0; i < points.length - 1; i++) {
+    const p0 = points[Math.max(i - 1, 0)];
+    const p1 = points[i];
+    const p2 = points[i + 1];
+    const p3 = points[Math.min(i + 2, points.length - 1)];
+
+    const cp1x = p1[0] + (p2[0] - p0[0]) / (6 * tension);
+    const cp1y = p1[1] + (p2[1] - p0[1]) / (6 * tension);
+    const cp2x = p2[0] - (p3[0] - p1[0]) / (6 * tension);
+    const cp2y = p2[1] - (p3[1] - p1[1]) / (6 * tension);
+
+    d += ` C${cp1x},${cp1y} ${cp2x},${cp2y} ${p2[0]},${p2[1]}`;
+  }
+  return d;
 }
 
 export default function HejiraMap() {
@@ -115,19 +124,44 @@ export default function HejiraMap() {
     setJourneysActive((prev) => !prev);
   }, []);
 
+  const projection = useMemo(() => {
+    return geoAlbers()
+      .center(PROJECTION_CONFIG.center)
+      .rotate(PROJECTION_CONFIG.rotate as [number, number, number])
+      .parallels(PROJECTION_CONFIG.parallels)
+      .scale(PROJECTION_CONFIG.scale)
+      .translate([MAP_WIDTH / 2, MAP_HEIGHT / 2]);
+  }, []);
+
+  const routePaths = useMemo(() => {
+    return ROUTES.map((route) => {
+      const projected = route.waypoints
+        .map((wp) => projection(wp))
+        .filter((p): p is [number, number] => p !== null);
+
+      return {
+        journey: route.journey,
+        d: catmullRomSpline(projected),
+        // For the guerin fade: compute the last projected point
+        lastPoint: projected.length > 0 ? projected[projected.length - 1] : null,
+      };
+    });
+  }, [projection]);
+
   return (
     <div className="absolute inset-0">
-      {/* SVG map */}
       <ComposableMap
-        projection="geoAlbersUsa"
+        projection="geoAlbers"
         projectionConfig={{
-          scale: 1100,
+          rotate: PROJECTION_CONFIG.rotate,
+          center: PROJECTION_CONFIG.center,
+          parallels: PROJECTION_CONFIG.parallels,
+          scale: PROJECTION_CONFIG.scale,
         }}
-        width={980}
-        height={610}
+        width={MAP_WIDTH}
+        height={MAP_HEIGHT}
         style={{ width: "100%", height: "100%" }}
       >
-        {/* SVG filters for watercolor + hand-drawn effects */}
         <defs>
           <filter id="watercolor-soft" x="-5%" y="-5%" width="110%" height="110%">
             <feTurbulence type="fractalNoise" baseFrequency="0.012" numOctaves="2" seed="5" />
@@ -138,122 +172,288 @@ export default function HejiraMap() {
             <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="2" seed="1" />
             <feDisplacementMap in="SourceGraphic" scale="1.8" />
           </filter>
+          <filter id="route-glow">
+            <feGaussianBlur stdDeviation="3" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+          <radialGradient id="marker-halo">
+            <stop offset="0%" stopColor="var(--paper)" stopOpacity="0.85" />
+            <stop offset="55%" stopColor="var(--paper)" stopOpacity="0.5" />
+            <stop offset="100%" stopColor="var(--paper)" stopOpacity="0" />
+          </radialGradient>
+          {/* Guerin fade gradient — fades out at the end (tour cancelled) */}
+          <linearGradient id="guerin-fade" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="#1f3a4a" stopOpacity="0.9" />
+            <stop offset="70%" stopColor="#1f3a4a" stopOpacity="0.7" />
+            <stop offset="95%" stopColor="#1f3a4a" stopOpacity="0.15" />
+            <stop offset="100%" stopColor="#1f3a4a" stopOpacity="0" />
+          </linearGradient>
         </defs>
 
-        {/* Layer 1: Regional watercolor fill */}
-        <Geographies geography={TOPO_URL}>
+        {/* Layer 0: Canada + Mexico from world atlas */}
+        <Geographies geography={WORLD_TOPO_URL}>
           {({ geographies }) =>
-            geographies.map((geo) => {
-              const stateId = geo.id as string;
-              const regionColor = STATE_REGION_COLORS[stateId] || "#d9c8a6";
-              return (
-                <Geography
-                  key={geo.rsmKey}
-                  geography={geo}
-                  fill={regionColor}
-                  stroke="none"
-                  style={{
-                    default: { opacity: 0.45, outline: "none" },
-                    hover: { opacity: 0.45, outline: "none" },
-                    pressed: { opacity: 0.45, outline: "none" },
-                  }}
-                  filter="url(#watercolor-soft)"
-                />
-              );
-            })
+            geographies
+              .filter((geo) => {
+                const id = String(geo.id);
+                return id === "124" || id === "484";
+              })
+              .map((geo) => {
+                const id = String(geo.id);
+                const isCanada = id === "124";
+                return (
+                  <Geography
+                    key={geo.rsmKey}
+                    geography={geo}
+                    fill={isCanada ? "#bfb48c" : "#d4c8a0"}
+                    stroke="none"
+                    style={{
+                      default: { opacity: isCanada ? 0.55 : 0.2, outline: "none" },
+                      hover: { opacity: isCanada ? 0.55 : 0.2, outline: "none" },
+                      pressed: { opacity: isCanada ? 0.55 : 0.2, outline: "none" },
+                    }}
+                    filter="url(#watercolor-soft)"
+                    tabIndex={-1}
+                  />
+                );
+              })
           }
         </Geographies>
 
-        {/* Layer 1b: Second watercolor pass with slight offset for painterly depth */}
-        <Geographies geography={TOPO_URL}>
+        {/* Canada/Mexico outlines */}
+        <Geographies geography={WORLD_TOPO_URL}>
           {({ geographies }) =>
-            geographies.map((geo) => {
-              const stateId = geo.id as string;
-              const regionColor = STATE_REGION_COLORS[stateId] || "#d9c8a6";
-              return (
+            geographies
+              .filter((geo) => {
+                const id = String(geo.id);
+                return id === "124" || id === "484";
+              })
+              .map((geo) => (
                 <Geography
-                  key={`${geo.rsmKey}-overlay`}
+                  key={`${geo.rsmKey}-outline`}
                   geography={geo}
-                  fill={regionColor}
-                  stroke="none"
+                  fill="none"
+                  stroke="#3d2818"
+                  strokeWidth={0.8}
+                  filter="url(#pen-rough)"
                   style={{
-                    default: { opacity: 0.2, outline: "none" },
-                    hover: { opacity: 0.2, outline: "none" },
-                    pressed: { opacity: 0.2, outline: "none" },
+                    default: { opacity: 0.4, outline: "none" },
+                    hover: { opacity: 0.4, outline: "none" },
+                    pressed: { opacity: 0.4, outline: "none" },
                   }}
-                  filter="url(#watercolor-soft)"
                   tabIndex={-1}
                 />
-              );
-            })
+              ))
           }
         </Geographies>
 
-        {/* Layer 2: State outlines — hand-drawn pen style */}
-        <Geographies geography={TOPO_URL}>
+        {/* Layer 1: US states — regional watercolor fill */}
+        <Geographies geography={US_TOPO_URL}>
           {({ geographies }) =>
-            geographies.map((geo) => (
-              <Geography
-                key={`${geo.rsmKey}-outline`}
-                geography={geo}
-                fill="none"
-                stroke="#3d2818"
-                strokeWidth={0.5}
-                style={{
-                  default: { opacity: 0.3, outline: "none" },
-                  hover: { opacity: 0.3, outline: "none" },
-                  pressed: { opacity: 0.3, outline: "none" },
-                }}
-                tabIndex={-1}
-              />
-            ))
+            geographies
+              .filter((geo) => {
+                const id = String(geo.id);
+                return id !== "02" && id !== "15" && id !== "72" && id !== "78";
+              })
+              .map((geo) => {
+                const stateId = geo.id as string;
+                const regionColor = STATE_REGION_COLORS[stateId] || "#d9c8a6";
+                return (
+                  <Geography
+                    key={geo.rsmKey}
+                    geography={geo}
+                    fill={regionColor}
+                    stroke="none"
+                    style={{
+                      default: { opacity: 0.5, outline: "none" },
+                      hover: { opacity: 0.5, outline: "none" },
+                      pressed: { opacity: 0.5, outline: "none" },
+                    }}
+                    filter="url(#watercolor-soft)"
+                  />
+                );
+              })
           }
         </Geographies>
 
-        {/* Layer 2b: Country outline — heavier stroke */}
-        <Geographies geography={TOPO_URL}>
-          {({ geographies }) => {
-            // We can't easily get the outer border from individual states,
-            // so we use a merged look by drawing all states with thicker stroke
-            return geographies.map((geo) => (
-              <Geography
-                key={`${geo.rsmKey}-border`}
-                geography={geo}
-                fill="none"
-                stroke="#3d2818"
-                strokeWidth={1.2}
-                filter="url(#pen-rough)"
-                style={{
-                  default: { opacity: 0.6, outline: "none" },
-                  hover: { opacity: 0.6, outline: "none" },
-                  pressed: { opacity: 0.6, outline: "none" },
-                }}
-                tabIndex={-1}
-              />
-            ));
-          }}
+        {/* Layer 1b: second watercolor pass */}
+        <Geographies geography={US_TOPO_URL}>
+          {({ geographies }) =>
+            geographies
+              .filter((geo) => {
+                const id = String(geo.id);
+                return id !== "02" && id !== "15" && id !== "72" && id !== "78";
+              })
+              .map((geo) => {
+                const stateId = geo.id as string;
+                const regionColor = STATE_REGION_COLORS[stateId] || "#d9c8a6";
+                return (
+                  <Geography
+                    key={`${geo.rsmKey}-overlay`}
+                    geography={geo}
+                    fill={regionColor}
+                    stroke="none"
+                    style={{
+                      default: { opacity: 0.22, outline: "none" },
+                      hover: { opacity: 0.22, outline: "none" },
+                      pressed: { opacity: 0.22, outline: "none" },
+                    }}
+                    filter="url(#watercolor-soft)"
+                    tabIndex={-1}
+                  />
+                );
+              })
+          }
         </Geographies>
 
-        {/* Layer 3: Map details — rivers, mountains, labels */}
+        {/* Layer 2: State outlines */}
+        <Geographies geography={US_TOPO_URL}>
+          {({ geographies }) =>
+            geographies
+              .filter((geo) => {
+                const id = String(geo.id);
+                return id !== "02" && id !== "15" && id !== "72" && id !== "78";
+              })
+              .map((geo) => (
+                <Geography
+                  key={`${geo.rsmKey}-outline`}
+                  geography={geo}
+                  fill="none"
+                  stroke="#3d2818"
+                  strokeWidth={0.5}
+                  style={{
+                    default: { opacity: 0.3, outline: "none" },
+                    hover: { opacity: 0.3, outline: "none" },
+                    pressed: { opacity: 0.3, outline: "none" },
+                  }}
+                  tabIndex={-1}
+                />
+              ))
+          }
+        </Geographies>
+
+        {/* Layer 2b: Country borders — heavier */}
+        <Geographies geography={US_TOPO_URL}>
+          {({ geographies }) =>
+            geographies
+              .filter((geo) => {
+                const id = String(geo.id);
+                return id !== "02" && id !== "15" && id !== "72" && id !== "78";
+              })
+              .map((geo) => (
+                <Geography
+                  key={`${geo.rsmKey}-border`}
+                  geography={geo}
+                  fill="none"
+                  stroke="#3d2818"
+                  strokeWidth={1.2}
+                  filter="url(#pen-rough)"
+                  style={{
+                    default: { opacity: 0.5, outline: "none" },
+                    hover: { opacity: 0.5, outline: "none" },
+                    pressed: { opacity: 0.5, outline: "none" },
+                  }}
+                  tabIndex={-1}
+                />
+              ))
+          }
+        </Geographies>
+
+        {/* Layer 3: Map details */}
         <MapDetails />
 
-        {/* Layer 4: Journey routes */}
-        {ROUTES.map((route) => {
-          const style = getJourneyStyle(route.journey);
+        {/* Canadian province labels */}
+        <g style={{ fontFamily: "var(--font-reenie-beanie), cursive" }} fill="#5a3a20" opacity="0.45">
+          <Marker coordinates={[-123.0, 51.5]}>
+            <text fontSize="14" textAnchor="middle" transform="rotate(-5)">
+              British Columbia
+            </text>
+          </Marker>
+          <Marker coordinates={[-115.0, 52.5]}>
+            <text fontSize="13" textAnchor="middle">
+              Alberta
+            </text>
+          </Marker>
+          <Marker coordinates={[-106.0, 54.0]}>
+            <text fontSize="14" textAnchor="middle" transform="rotate(-2)">
+              Saskatchewan
+            </text>
+          </Marker>
+          <Marker coordinates={[-97.0, 53.0]}>
+            <text fontSize="13" textAnchor="middle">
+              Manitoba
+            </text>
+          </Marker>
+          <Marker coordinates={[-85.0, 51.0]}>
+            <text fontSize="14" textAnchor="middle" transform="rotate(-3)">
+              Ontario
+            </text>
+          </Marker>
+          <Marker coordinates={[-72.0, 49.5]}>
+            <text fontSize="13" textAnchor="middle" transform="rotate(-2)">
+              Québec
+            </text>
+          </Marker>
+        </g>
+
+        {/* Layer 4: Journey routes — curved Catmull-Rom splines */}
+        {routePaths.map(({ journey, d }) => {
+          const style = JOURNEY_STYLES[journey] || JOURNEY_STYLES.solo;
+          const isActive = journeysActive;
+
           return (
-            <Line
-              key={route.journey}
-              coordinates={route.waypoints}
-              stroke={style.color}
-              strokeWidth={journeysActive ? 3.5 : style.width}
-              strokeDasharray={style.dasharray}
-              strokeLinecap="round"
-              fill="none"
-              style={{
-                opacity: journeysActive ? 1 : 0.65,
-                transition: "opacity 0.4s, stroke-width 0.4s",
-              }}
-            />
+            <g key={journey}>
+              {/* Route glow shadow */}
+              <path
+                d={d}
+                stroke={style.glow}
+                strokeWidth={isActive ? 8 : 5}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                fill="none"
+                style={{
+                  opacity: isActive ? 0.6 : 0.3,
+                  transition: "opacity 0.4s, stroke-width 0.4s",
+                }}
+                filter="url(#route-glow)"
+              />
+              {/* Main route line */}
+              <path
+                d={d}
+                stroke={journey === "guerin" ? "url(#guerin-fade)" : style.color}
+                strokeWidth={isActive ? 3.5 : style.width}
+                strokeDasharray={style.dasharray}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                fill="none"
+                style={{
+                  opacity: isActive ? style.opacity : style.opacity * 0.7,
+                  transition: "opacity 0.4s, stroke-width 0.4s",
+                }}
+              />
+            </g>
+          );
+        })}
+
+        {/* Guerin route cancellation mark — X at the end */}
+        {routePaths.map(({ journey, lastPoint }) => {
+          if (journey !== "guerin" || !lastPoint) return null;
+          return (
+            <g key="guerin-cancel" opacity={journeysActive ? 0.7 : 0.4} style={{ transition: "opacity 0.4s" }}>
+              <line
+                x1={lastPoint[0] - 4} y1={lastPoint[1] - 4}
+                x2={lastPoint[0] + 4} y2={lastPoint[1] + 4}
+                stroke="#1f3a4a" strokeWidth="1.5" strokeLinecap="round"
+              />
+              <line
+                x1={lastPoint[0] + 4} y1={lastPoint[1] - 4}
+                x2={lastPoint[0] - 4} y2={lastPoint[1] + 4}
+                stroke="#1f3a4a" strokeWidth="1.5" strokeLinecap="round"
+              />
+            </g>
           );
         })}
 

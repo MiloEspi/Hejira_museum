@@ -4,8 +4,8 @@ import { ReactNode } from "react";
 
 /**
  * Cuaderno.tsx — The paper notebook wrapper for the map.
- * Provides the paper texture, burnt edges, coffee stains, binding shadow,
- * and the overall "worn travel journal" aesthetic.
+ * Provides paper texture, burnt edges, coffee stains, binding shadow,
+ * wood frame border, and the "worn travel journal" aesthetic.
  */
 export default function Cuaderno({ children }: { children: ReactNode }) {
   return (
@@ -14,122 +14,178 @@ export default function Cuaderno({ children }: { children: ReactNode }) {
         background: "radial-gradient(ellipse at center, #4a3a22 0%, #2a1f10 80%)",
       }}
     >
+      {/* Wood frame border */}
       <div
-        className="relative overflow-hidden"
+        className="relative"
         style={{
-          width: "min(1400px, 96vw)",
-          height: "min(820px, 94vh)",
-          background:
-            "radial-gradient(ellipse 80% 60% at 50% 50%, var(--paper) 0%, var(--paper-deep) 75%, var(--paper-shadow) 100%)",
-          boxShadow: `
-            0 0 0 1px rgba(0,0,0,0.4),
-            0 30px 80px rgba(0,0,0,0.8),
-            inset 0 0 80px rgba(120, 90, 50, 0.18),
-            inset 0 0 200px rgba(80, 50, 20, 0.12)
+          padding: "12px",
+          background: `
+            linear-gradient(135deg, #5a3a18 0%, #7a5228 15%, #6a4420 30%, #8a6030 50%, #6a4420 70%, #7a5228 85%, #5a3a18 100%)
           `,
-          borderRadius: "4px",
-          transform: "rotate(-0.3deg)",
+          borderRadius: "6px",
+          boxShadow: `
+            0 0 0 2px rgba(0,0,0,0.5),
+            inset 0 0 0 1px rgba(120, 90, 50, 0.3),
+            0 40px 100px rgba(0,0,0,0.8)
+          `,
         }}
       >
-        {/* Paper texture overlay (stains, grain) */}
+        {/* Wood grain texture overlay */}
         <div
-          className="absolute inset-0 pointer-events-none"
+          className="absolute inset-0 pointer-events-none rounded-[6px]"
           style={{
             backgroundImage: `
-              radial-gradient(circle at 20% 30%, rgba(110,82,53,0.08) 0%, transparent 40%),
-              radial-gradient(circle at 80% 70%, rgba(110,82,53,0.06) 0%, transparent 40%),
-              radial-gradient(circle at 50% 50%, transparent 30%, rgba(110,82,53,0.04) 100%)
+              repeating-linear-gradient(
+                92deg,
+                transparent 0px,
+                transparent 3px,
+                rgba(0,0,0,0.06) 3px,
+                rgba(0,0,0,0.06) 4px
+              )
             `,
             mixBlendMode: "multiply",
           }}
         />
-
-        {/* Paper grain via SVG feTurbulence */}
+        {/* Wood highlights */}
         <div
-          className="absolute inset-0 pointer-events-none"
+          className="absolute inset-0 pointer-events-none rounded-[6px]"
           style={{
-            backgroundImage: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.4 0 0 0 0 0.3 0 0 0 0 0.15 0 0 0 0.15 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>")`,
-            opacity: 0.35,
-            mixBlendMode: "multiply",
+            background: `
+              linear-gradient(180deg, rgba(255,255,255,0.08) 0%, transparent 20%, transparent 80%, rgba(0,0,0,0.15) 100%)
+            `,
           }}
         />
 
-        {/* Binding shadow on left */}
+        {/* Inner paper */}
         <div
-          className="absolute left-0 top-0 bottom-0 w-[30px] pointer-events-none z-10"
+          className="relative overflow-hidden"
           style={{
-            background: "linear-gradient(to right, rgba(0,0,0,0.25), transparent)",
+            width: "min(1400px, 94vw)",
+            height: "min(820px, 92vh)",
+            background:
+              "radial-gradient(ellipse 80% 60% at 50% 50%, var(--paper) 0%, var(--paper-deep) 75%, var(--paper-shadow) 100%)",
+            boxShadow: `
+              inset 0 0 80px rgba(120, 90, 50, 0.18),
+              inset 0 0 200px rgba(80, 50, 20, 0.12)
+            `,
+            borderRadius: "2px",
+            transform: "rotate(-0.3deg)",
           }}
-        />
-
-        {/* Burnt edges */}
-        <BurntEdge className="top-[-10px] left-[-10px] w-[200px] h-[120px]" />
-        <BurntEdge className="top-[-10px] right-[-10px] w-[180px] h-[100px]" />
-        <BurntEdge className="bottom-[-10px] left-[-10px] w-[220px] h-[140px]" />
-        <BurntEdge className="bottom-[-10px] right-[-10px] w-[200px] h-[130px]" />
-
-        {/* Coffee stains */}
-        <CoffeeStain className="top-[200px] right-[200px]" size={80} rotation={20} />
-        <CoffeeStain className="bottom-[220px] left-[280px]" size={50} rotation={0} />
-
-        {/* Map header */}
-        <div className="absolute top-[18px] left-1/2 -translate-x-1/2 text-center z-[6] pointer-events-none">
+        >
+          {/* Paper texture overlay (stains, grain) */}
           <div
+            className="absolute inset-0 pointer-events-none"
             style={{
-              fontFamily: "var(--font-italiana), serif",
-              fontSize: "42px",
-              fontWeight: 400,
-              color: "var(--ink)",
-              letterSpacing: "0.12em",
-              lineHeight: 1,
+              backgroundImage: `
+                radial-gradient(circle at 20% 30%, rgba(110,82,53,0.08) 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(110,82,53,0.06) 0%, transparent 40%),
+                radial-gradient(circle at 50% 50%, transparent 30%, rgba(110,82,53,0.04) 100%)
+              `,
+              mixBlendMode: "multiply",
             }}
-          >
-            Hejira
-          </div>
+          />
+
+          {/* Paper grain via SVG feTurbulence */}
           <div
+            className="absolute inset-0 pointer-events-none"
             style={{
-              fontFamily: "var(--font-reenie-beanie), cursive",
-              fontSize: "22px",
-              color: "var(--ink-soft)",
-              marginTop: "6px",
-              letterSpacing: "0.02em",
+              backgroundImage: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.4 0 0 0 0 0.3 0 0 0 0 0.15 0 0 0 0.15 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>")`,
+              opacity: 0.35,
+              mixBlendMode: "multiply",
             }}
-          >
-            a map of three journeys
-          </div>
+          />
+
+          {/* Binding shadow on left */}
           <div
+            className="absolute left-0 top-0 bottom-0 w-[30px] pointer-events-none z-10"
             style={{
-              fontFamily: "var(--font-courier-prime), monospace",
-              fontSize: "10px",
-              color: "var(--ink-faded)",
-              letterSpacing: "0.5em",
-              marginTop: "6px",
+              background: "linear-gradient(to right, rgba(0,0,0,0.25), transparent)",
             }}
-          >
-            — 1975 / 1976 —
+          />
+
+          {/* Burnt edges */}
+          <BurntEdge className="top-[-10px] left-[-10px] w-[200px] h-[120px]" />
+          <BurntEdge className="top-[-10px] right-[-10px] w-[180px] h-[100px]" />
+          <BurntEdge className="bottom-[-10px] left-[-10px] w-[220px] h-[140px]" />
+          <BurntEdge className="bottom-[-10px] right-[-10px] w-[200px] h-[130px]" />
+
+          {/* Coffee stains */}
+          <CoffeeStain className="top-[200px] right-[200px]" size={80} rotation={20} />
+          <CoffeeStain className="bottom-[220px] left-[280px]" size={50} rotation={0} />
+
+          {/* Map header */}
+          <div className="absolute top-[18px] left-1/2 -translate-x-1/2 text-center z-[6] pointer-events-none">
+            <div
+              style={{
+                fontFamily: "var(--font-italiana), serif",
+                fontSize: "42px",
+                fontWeight: 400,
+                color: "var(--ink)",
+                letterSpacing: "0.12em",
+                lineHeight: 1,
+              }}
+            >
+              Hejira
+            </div>
+            <div
+              style={{
+                fontFamily: "var(--font-reenie-beanie), cursive",
+                fontSize: "22px",
+                color: "var(--ink-soft)",
+                marginTop: "6px",
+                letterSpacing: "0.02em",
+              }}
+            >
+              a map of three journeys
+            </div>
+            <div
+              style={{
+                fontFamily: "var(--font-courier-prime), monospace",
+                fontSize: "10px",
+                color: "var(--ink-faded)",
+                letterSpacing: "0.5em",
+                marginTop: "6px",
+              }}
+            >
+              — 1975 / 1976 —
+            </div>
           </div>
+
+          {/* Decorative scribbles */}
+          <Scribble
+            className="top-[90px] left-[40px]"
+            rotation={-4}
+            text={`"the road became a\nmetaphor for my life"`}
+          />
+          <Scribble
+            className="bottom-[80px] left-[40px]"
+            rotation={3}
+            text={`from the Arabic hijrah —\nexodus, departure`}
+          />
+          <Scribble
+            className="top-[95px] right-[40px]"
+            rotation={2}
+            text={`written mostly in the car\nbetween Maine and L.A.`}
+            align="right"
+          />
+
+          {/* Decorative crow feather — bottom right of paper */}
+          <div className="absolute bottom-[60px] right-[50px] z-[2] pointer-events-none opacity-[0.2]">
+            <svg width="40" height="80" viewBox="0 0 40 80">
+              <g transform="translate(20, 40) rotate(15)">
+                <path d="M 0 -35 Q 1 0 0 35" stroke="#0a0a0a" strokeWidth="1" fill="none" />
+                <path d="M 0 -30 Q -8 -20 -10 -5 Q -8 10 0 25 Q 8 10 10 -5 Q 8 -20 0 -30 Z" fill="#0a0a0a" opacity="0.12" />
+                <path d="M 0 -25 Q -5 -15 -7 0" stroke="#0a0a0a" strokeWidth="0.3" fill="none" />
+                <path d="M 0 -20 Q -4 -10 -6 5" stroke="#0a0a0a" strokeWidth="0.3" fill="none" />
+                <path d="M 0 -25 Q 5 -15 7 0" stroke="#0a0a0a" strokeWidth="0.3" fill="none" />
+                <path d="M 0 -20 Q 4 -10 6 5" stroke="#0a0a0a" strokeWidth="0.3" fill="none" />
+              </g>
+            </svg>
+          </div>
+
+          {/* Content (map, markers, etc.) */}
+          {children}
         </div>
-
-        {/* Decorative scribbles */}
-        <Scribble
-          className="top-[90px] left-[40px]"
-          rotation={-4}
-          text={`"the road became a\nmetaphor for my life"`}
-        />
-        <Scribble
-          className="bottom-[80px] left-[40px]"
-          rotation={3}
-          text={`from the Arabic hijrah —\nexodus, departure`}
-        />
-        <Scribble
-          className="top-[95px] right-[40px]"
-          rotation={2}
-          text={`written mostly in the car\nbetween Maine and L.A.`}
-          align="right"
-        />
-
-        {/* Content (map, markers, etc.) */}
-        {children}
       </div>
     </div>
   );

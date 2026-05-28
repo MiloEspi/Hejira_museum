@@ -38,12 +38,12 @@ export const SONGS: Song[] = [
     trackNumber: 1,
     duration: "5:00",
     journey: "thunder",
-    city: "Montreal area",
-    coords: [-73.5, 45.5],
+    city: "Baljennie, SK",
+    coords: [-107.535, 52.321],
     symbolDescription:
       "A coyote sitting in a roadside diner, staring out the window",
     inspiredBy:
-      "Sam Shepard, playwright and actor, with whom Joni had a brief romance during Bob Dylan's Rolling Thunder Revue in late 1975",
+      "Sam Shepard, playwright and actor, with whom Joni had a brief romance during Bob Dylan's Rolling Thunder Revue in late 1975. The lyrics reference 'on the road to Baljennie near my old home town' — Baljennie is a hamlet near Maidstone, Saskatchewan, where Joni grew up.",
     highlightQuote:
       "No regrets, Coyote / we just come from such different sets of circumstance",
     personnel: [
@@ -73,7 +73,7 @@ export const SONGS: Song[] = [
     duration: "6:00",
     journey: "solo",
     city: "Arizona desert",
-    coords: [-111.0, 34.5],
+    coords: [-111.0, 35.0],
     symbolDescription:
       "A red Lockheed Vega airplane (Amelia Earhart's) with six vapor trails behind it",
     inspiredBy:
@@ -107,8 +107,8 @@ export const SONGS: Song[] = [
     trackNumber: 3,
     duration: "5:03",
     journey: "guerin",
-    city: "Memphis, TN",
-    coords: [-90.0, 35.1],
+    city: "Beale Street, Memphis, TN",
+    coords: [-90.05, 35.14],
     symbolDescription:
       "An old acoustic guitar leaning at an angle, with a red Beale Street neon sign in the background",
     inspiredBy:
@@ -144,8 +144,8 @@ export const SONGS: Song[] = [
     trackNumber: 4,
     duration: "4:15",
     journey: "solo",
-    city: "Maine coast",
-    coords: [-69.0, 44.0],
+    city: "Damariscotta, ME",
+    coords: [-69.519, 44.033],
     symbolDescription:
       "A 1970s skateboard on sand, with a seagull above",
     inspiredBy:
@@ -177,8 +177,8 @@ export const SONGS: Song[] = [
     trackNumber: 5,
     duration: "6:35",
     journey: "guerin",
-    city: "Madison, WI",
-    coords: [-89.4, 43.1],
+    city: "Lake Mendota, Madison, WI",
+    coords: [-89.416, 43.1],
     symbolDescription:
       'A detailed snowflake superimposed over a lace pattern ("snow gathers like bolts of lace")',
     inspiredBy:
@@ -216,8 +216,8 @@ export const SONGS: Song[] = [
     trackNumber: 6,
     duration: "8:37",
     journey: "solo",
-    city: "Staten Island",
-    coords: [-74.1, 40.6],
+    city: "Mandolin Brothers, Staten Island, NY",
+    coords: [-74.116, 40.633],
     symbolDescription:
       "A white wedding dress in a Staten Island storefront, with a ferry in the background",
     inspiredBy:
@@ -250,12 +250,12 @@ export const SONGS: Song[] = [
     trackNumber: 7,
     duration: "4:20",
     journey: "solo",
-    city: "Midwest plains",
-    coords: [-99.0, 41.5],
+    city: "Sunshine Coast, BC",
+    coords: [-123.833, 49.5],
     symbolDescription:
       "A crow in flight with wings fully extended, golden eye",
     inspiredBy:
-      "The moment when Joni, driving alone through the midwest plains toward LA, saw a black crow flying parallel to the road and recognized herself in it. The identification is total: she was the crow (black hair, black cape from the photoshoot, aimless flight).",
+      "Black Crow addresses the logistical nightmare of leaving Joni's remote second home on the Sunshine Coast of British Columbia. The song details a chaotic sequence of transport modes: 'I took a ferry to the highway / Then I drove to a seaside bar / I took a plane to a taxi / And a taxi to a train.' Looking out the window, sleep-deprived, Joni compares herself to the region's black crows diving for shiny objects — an allegory for her own hunger for fame and applause.",
     highlightQuote:
       "In search of love and music / my whole life has been / illumination, corruption / and diving, diving, diving, diving",
     personnel: [
@@ -284,12 +284,12 @@ export const SONGS: Song[] = [
     trackNumber: 8,
     duration: "5:03",
     journey: "guerin",
-    city: "Florida",
-    coords: [-82.0, 28.5],
+    city: "DeSoto Beach Motel, Savannah, GA",
+    coords: [-80.85, 32.0],
     symbolDescription:
       "A blue neon motel sign with a palm tree beside it (Florida)",
     inspiredBy:
-      "An anonymous motel in Florida where Joni stayed between cities during the tour. The most jazz-oriented song on the album, almost a torch song.",
+      "The DeSoto Beach Motel in Savannah, Georgia — a modest, slightly run-down place sitting directly on the beach. Joni stayed there between tour cities during the Guerin tour. The most jazz-oriented song on the album, almost a torch song.",
     highlightQuote:
       "I've got a blue motel room / with a blue bedspread / I've got the blue blue blues / blue ribbons on my head",
     personnel: [
@@ -317,12 +317,12 @@ export const SONGS: Song[] = [
     trackNumber: 9,
     duration: "6:37",
     journey: "solo",
-    city: "West Texas",
-    coords: [-101.0, 31.5],
+    city: "Boulder, CO",
+    coords: [-105.27, 40.015],
     symbolDescription:
       'A photograph of Earth from space (Earthrise / Blue Marble style), or a lone phone booth on an empty road',
     inspiredBy:
-      "A real moment. Joni, stopping at a gas station restroom in Texas, saw on the wall a photograph of Earth taken from the moon. The song narrates that moment: cosmic perspective that puts personal anguish in scale. It's the philosophical closing of the album. Joni also mentions an encounter with Chögyam Trungpa, a Tibetan Buddhist teacher, at some point during the road trip.",
+      "Joni visited Chögyam Trungpa, the Tibetan Buddhist teacher, in Boulder, Colorado for three days during her cross-country trip. The song narrates cosmic perspective: in a highway service station she saw a photograph of Earth taken from the moon, putting personal anguish in scale. It's the philosophical closing of the album.",
     highlightQuote:
       "In a highway service station / over the month of June / was a photograph of the Earth / taken coming back from the moon",
     personnel: [

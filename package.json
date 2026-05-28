@@ -33,6 +33,7 @@
     "eslint-config-next": "16.2.6",
     "tailwindcss": "^4",
     "typescript": "^5",
-    "us-atlas": "^3.0.1"
+    "us-atlas": "^3.0.1",
+    "world-atlas": "^2.0.2"
   }
 }

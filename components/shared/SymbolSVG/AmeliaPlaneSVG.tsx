@@ -1,26 +1,54 @@
 "use client";
 
+/**
+ * AmeliaPlaneSVG — Lockheed Vega over desert with 6 vapor trails and saguaro cactus.
+ */
 export default function AmeliaPlaneSVG({ size = 64 }: { size?: number }) {
   return (
-    <svg viewBox="0 0 64 64" width={size} height={size} aria-label="Amelia Earhart's Lockheed Vega">
-      {/* Lockheed Vega style plane */}
-      <g transform="translate(32, 32) rotate(-15)">
-        {/* Fuselage */}
-        <ellipse cx="0" cy="0" rx="22" ry="3" fill="#8a5a2b" />
-        {/* Wings */}
-        <path d="M -16 -1 L -2 -12 L 6 -12 L 2 -1 Z" fill="#a67340" />
-        <path d="M -16 1 L -2 12 L 6 12 L 2 1 Z" fill="#6e4a20" />
-        {/* Tail */}
-        <path d="M 18 -1 L 22 -6 L 24 -1 L 24 1 L 22 6 L 18 1 Z" fill="#8a5a2b" />
-        {/* Propeller */}
-        <line x1="-22" y1="-6" x2="-22" y2="6" stroke="#2b1d10" strokeWidth="1.5" />
-        <circle cx="-22" cy="0" r="2" fill="#2b1d10" />
-        {/* Cockpit */}
-        <ellipse cx="-4" cy="-1" rx="3" ry="1.5" fill="#1a1208" />
+    <svg viewBox="0 0 64 64" width={size} height={size} aria-label="Lockheed Vega over desert with six vapor trails">
+      <rect width="64" height="64" fill="#4a7aa0" opacity="0.2" rx="4" />
+
+      {/* Six vapor trails — 6 guitar strings */}
+      <g stroke="#d0c4b0" strokeLinecap="round" fill="none">
+        <path d="M 4 8 Q 20 10 36 14 Q 48 17 54 18" strokeWidth="0.6" opacity="0.7" />
+        <path d="M 4 12 Q 18 14 34 18 Q 46 21 52 22" strokeWidth="0.6" opacity="0.6" />
+        <path d="M 4 16 Q 16 18 32 22 Q 44 25 50 26" strokeWidth="0.6" opacity="0.5" />
+        <path d="M 4 20 Q 14 22 30 26 Q 42 29 48 30" strokeWidth="0.6" opacity="0.45" />
+        <path d="M 4 24 Q 12 26 28 30 Q 40 33 46 34" strokeWidth="0.5" opacity="0.4" />
+        <path d="M 4 28 Q 10 30 26 34 Q 38 37 44 38" strokeWidth="0.5" opacity="0.35" />
       </g>
-      {/* Vapor trails */}
-      <path d="M 50 18 Q 56 22 60 26" stroke="#c89554" strokeWidth="0.6" fill="none" opacity="0.7" />
-      <path d="M 50 22 Q 56 26 60 30" stroke="#c89554" strokeWidth="0.6" fill="none" opacity="0.5" />
+
+      {/* Lockheed Vega */}
+      <g transform="translate(48, 16) rotate(-8)">
+        <ellipse cx="0" cy="0" rx="8" ry="1.8" fill="#a67340" />
+        <path d="M -4 -1.5 L -2 -6 L 4 -6 L 3 -1.5 Z" fill="#8a5a2b" />
+        <path d="M -4 1.5 L -2 6 L 4 6 L 3 1.5 Z" fill="#6e4a20" />
+        <path d="M 6 -0.8 L 9 -3 L 10 -0.5 L 10 0.5 L 9 3 L 6 0.8 Z" fill="#8a5a2b" />
+        <line x1="-8" y1="-3" x2="-8" y2="3" stroke="#2b1d10" strokeWidth="1" />
+        <circle cx="-8" cy="0" r="1" fill="#2b1d10" />
+        <ellipse cx="-2" cy="-0.5" rx="1.5" ry="0.8" fill="#1a1208" />
+      </g>
+
+      {/* Desert floor */}
+      <path d="M 0 50 Q 32 48 64 50 L 64 64 L 0 64 Z" fill="#d4a860" opacity="0.35" />
+
+      {/* Saguaro cactus */}
+      <g transform="translate(14, 44)" fill="#4a6a3a" opacity="0.6">
+        <rect x="-1.5" y="0" width="3" height="16" rx="1.5" />
+        <path d="M 1.5 6 Q 6 6 6 2" stroke="#4a6a3a" strokeWidth="2.5" fill="none" strokeLinecap="round" />
+        <path d="M -1.5 9 Q -5 9 -5 5" stroke="#4a6a3a" strokeWidth="2" fill="none" strokeLinecap="round" />
+      </g>
+
+      {/* Small cactus */}
+      <g transform="translate(46, 50)" fill="#4a6a3a" opacity="0.4">
+        <rect x="-1" y="0" width="2" height="10" rx="1" />
+        <path d="M 1 4 Q 4 4 4 2" stroke="#4a6a3a" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+      </g>
+
+      {/* Desert wildflowers */}
+      <circle cx="26" cy="56" r="1" fill="#c86040" opacity="0.6" />
+      <circle cx="38" cy="55" r="1" fill="#a85a80" opacity="0.6" />
+      <circle cx="54" cy="57" r="0.9" fill="#d4a040" opacity="0.5" />
     </svg>
   );
 }
