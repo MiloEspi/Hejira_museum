@@ -23,16 +23,16 @@ const JOURNEY_LABELS: Record<string, string> = {
 
 const p = (filename: string) => `/photos/${encodeURIComponent(filename)}`;
 
-const SONG_BG_PHOTOS: Record<string, string> = {
-  "coyote":      "Joni black crow skiing no look.jpg",
-  "amelia":      "another skiing, very white joni.jfif",
-  "furry":       "joni smoking.webp",
-  "strange-boy": "Joni smiling pretty, session with sky on her lap.jpg",
-  "hejira":      "GREAT image, joni skiing ice, for background great.jfif",
-  "sharon":      "Hejira album art, TOP ONLY, from chest.webp",
-  "black-crow":  "Hejira winter ice black crow smiling.jfif",
-  "blue-motel":  "Joni french model, black crow sitting down.webp",
-  "refuge":      "Very edited photo, hand man, black crow.webp",
+const SONG_BG_PHOTOS: Record<string, { file: string; pos: string }> = {
+  "coyote":      { file: "Joni black crow skiing no look.jpg", pos: "45% center" },
+  "amelia":      { file: "Joni smiling pretty, session with sky on her lap.jpg", pos: "center" },
+  "furry":       { file: "joni smoking.webp", pos: "center" },
+  "strange-boy": { file: "another skiing, very white joni.jfif", pos: "60% center" },
+  "hejira":      { file: "Hejira winter ice black crow smiling.jfif", pos: "35% center" },
+  "sharon":      { file: "Joni unedited album art.jpg", pos: "40% center" },
+  "black-crow":  { file: "Joni french model, black crow sitting down.webp", pos: "center 30%" },
+  "blue-motel":  { file: "Hejira_good_definition_albumart.jpg", pos: "15% center" },
+  "refuge":      { file: "Very edited photo, hand man, black crow.webp", pos: "center" },
 };
 
 /* Gallery removed — photos now serve as subtle section backgrounds */
@@ -178,7 +178,7 @@ export default function SongPageLayout({ song, content }: Props) {
         {bgPhoto && (
           <>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={p(bgPhoto)} alt="" className="song-page__section-bg-img" aria-hidden="true" />
+            <img src={p(bgPhoto.file)} alt="" className="song-page__section-bg-img" style={{ objectPosition: bgPhoto.pos }} aria-hidden="true" />
             <div className="song-page__section-bg-tint" aria-hidden="true" />
           </>
         )}
@@ -361,10 +361,13 @@ export default function SongPageLayout({ song, content }: Props) {
       <section id="gallery" className="song-page__gallery">
         <h2 className="song-page__section-title">Gallery</h2>
         <div className="song-page__gallery-grid">
-          {Object.values(SONG_BG_PHOTOS).slice(0, 3).map((photoSrc, idx) => (
+          {Object.values(SONG_BG_PHOTOS)
+            .sort(() => 0.5 - Math.random()) // Shuffle to show different photos
+            .slice(0, 3)
+            .map((photo, idx) => (
             <div key={idx} className="song-page__gallery-item">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={p(photoSrc)} alt="" style={{width: "100%", height: "100%", objectFit: "cover"}} />
+              <img src={p(photo.file)} alt="" style={{width: "100%", height: "100%", objectFit: "cover", objectPosition: photo.pos}} />
             </div>
           ))}
         </div>

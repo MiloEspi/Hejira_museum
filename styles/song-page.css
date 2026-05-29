@@ -775,7 +775,7 @@
   object-fit: cover;
   filter: blur(8px) grayscale(0.25) sepia(0.2);
   opacity: 0.16;
-  transform: scale(1.06);
+  transform: scale(1.02);
   pointer-events: none;
   z-index: 0;
   mix-blend-mode: darken;
