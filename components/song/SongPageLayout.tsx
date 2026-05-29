@@ -19,11 +19,7 @@ const JOURNEY_LABELS: Record<string, string> = {
   solo: "Cross-country Solo",
 };
 
-const JOURNEY_COLORS: Record<string, string> = {
-  thunder: "#6b1f2a",
-  guerin: "#1f3a4a",
-  solo: "#8a5a2b",
-};
+/* Journey colors now come from CSS custom properties via data-journey attribute */
 
 const p = (filename: string) => `/photos/${encodeURIComponent(filename)}`;
 
@@ -39,20 +35,7 @@ const SONG_BG_PHOTOS: Record<string, string> = {
   "refuge":      "Very edited photo, hand man, black crow.webp",
 };
 
-const GALLERY_PHOTOS = [
-  { file: "GREAT image, joni skiing ice, for background great.jfif", caption: "Lake Mendota, 1976" },
-  { file: "Hejira winter ice black crow smiling.jfif",                caption: "The album sessions" },
-  { file: "Joni black crow skiing no look.jpg",                       caption: "Skating away" },
-  { file: "French model joni, eyes closed.jfif",                      caption: "Paris, 1975" },
-  { file: "Joni french model, black crow sitting down.webp",          caption: "Continental portrait" },
-  { file: "Joni smiling pretty, session with sky on her lap.jpg",     caption: "With Sky" },
-  { file: "another skiing, very white joni.jfif",                     caption: "White winter" },
-  { file: "Hejira album art, TOP ONLY, from chest.webp",              caption: "Album sessions" },
-  { file: "Very edited photo, hand man, black crow.webp",             caption: "In motion" },
-  { file: "joni smoking.webp",                                        caption: "Studio session" },
-  { file: "Joni unedited album art.jpg",                              caption: "Album art, unedited" },
-  { file: "hejira-albumart.jpg",                                      caption: "Hejira — official" },
-];
+/* Gallery removed — photos now serve as subtle section backgrounds */
 
 export default function SongPageLayout({ song, content }: Props) {
   const router = useRouter();
@@ -112,7 +95,7 @@ export default function SongPageLayout({ song, content }: Props) {
   };
 
   return (
-    <div className="song-page">
+    <div className="song-page" data-journey={song.journey}>
       {/* Navigation */}
       <nav className="song-page__nav">
         <Link href="/the-map" className="song-page__back">
@@ -158,8 +141,8 @@ export default function SongPageLayout({ song, content }: Props) {
           )}
           <div className="song-page__hero-meta">
             <span className="song-page__journey-badge" style={{
-              borderColor: JOURNEY_COLORS[song.journey] || "#8a5a2b",
-              color: JOURNEY_COLORS[song.journey] || "#8a5a2b",
+              borderColor: "var(--accent)",
+              color: "var(--accent)",
             }}>
               {JOURNEY_LABELS[song.journey]}
             </span>
@@ -187,8 +170,11 @@ export default function SongPageLayout({ song, content }: Props) {
       {/* Main Content */}
       <div className={`song-page__content${bgPhoto ? " song-page__section-bg-wrap" : ""}`}>
         {bgPhoto && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={p(bgPhoto)} alt="" className="song-page__section-bg-img" aria-hidden="true" />
+          <>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={p(bgPhoto)} alt="" className="song-page__section-bg-img" aria-hidden="true" />
+            <div className="song-page__section-bg-tint" aria-hidden="true" />
+          </>
         )}
         {/* Lyrics Column */}
         <section className="song-page__lyrics">
@@ -351,24 +337,7 @@ export default function SongPageLayout({ song, content }: Props) {
         </section>
       )}
 
-      {/* Photo Gallery */}
-      <section className="song-page__gallery">
-        <h2 className="song-page__section-title">Photos</h2>
-        <div className="song-page__gallery-grid">
-          {GALLERY_PHOTOS.map(({ file, caption }) => (
-            <div key={file} className="song-page__gallery-item">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={p(file)}
-                alt={caption}
-                className="song-page__gallery-photo"
-                loading="lazy"
-              />
-              <div className="song-page__gallery-caption">{caption}</div>
-            </div>
-          ))}
-        </div>
-      </section>
+      {/* Gallery removed — photos now serve as section backgrounds */}
 
       {/* Navigation Footer */}
       <footer className="song-page__footer">

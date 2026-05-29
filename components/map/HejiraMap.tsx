@@ -21,16 +21,16 @@ import JourneyDetailPanel from "./JourneyDetailPanel";
 const US_TOPO_URL = "/maps/us-states-10m.json";
 const WORLD_TOPO_URL = "/maps/countries-50m.json";
 
-const MAP_WIDTH = 980;
-const MAP_HEIGHT = 720;
+const MAP_WIDTH = 1400;
+const MAP_HEIGHT = 820;
 
 /* ───────── Projection config ───────── */
-/* Zoomed in — EEUU fills the view, Saskatchewan (Coyote) still visible at top */
+/* Zoomed in — US fills the viewport edge-to-edge, just enough Canada for Coyote */
 const PROJECTION_CONFIG = {
-  rotate: [96, 0, 0] as [number, number, number],
-  center: [0, 38] as [number, number],
+  rotate: [97, 0, 0] as [number, number, number],
+  center: [0, 39] as [number, number],
   parallels: [29, 55] as [number, number],
-  scale: 1100,
+  scale: 1550,
 };
 
 /* ───────── Regional watercolor palette — high contrast ───────── */

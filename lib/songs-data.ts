@@ -116,8 +116,7 @@ export const SONGS: Song[] = [
     highlightQuote:
       "Old Furry sings the blues / propped up in his bed / with his dentures and his leg removed",
     personnel: [
-      { name: "Joni Mitchell", instrument: "guitar" },
-      { name: "John Guerin", instrument: "drums" },
+      { name: "Joni Mitchell", instrument: "guitar, vocals" },
       { name: "Max Bennett", instrument: "bass" },
       {
         name: "Neil Young",
@@ -151,7 +150,7 @@ export const SONGS: Song[] = [
     inspiredBy:
       "A romance with a younger man (a skater from the northeast coast, as the lyrics suggest). Joni examines the age difference and emotional asymmetry.",
     highlightQuote:
-      "He gave me clothes / and he gave me eagles / and he gave me roses / and a heart-shaped locket",
+      "A strange boy is weaving / a course of grace and havoc / on a yellow skateboard / thru midday sidewalk traffic",
     personnel: [
       { name: "Joni Mitchell", instrument: "vocals, rhythm guitar" },
       { name: "Larry Carlton", instrument: "lead guitar" },
@@ -176,7 +175,7 @@ export const SONGS: Song[] = [
     title: "Hejira",
     trackNumber: 5,
     duration: "6:35",
-    journey: "guerin",
+    journey: "solo",
     city: "Lake Mendota, Madison, WI",
     coords: [-89.416, 43.1],
     symbolDescription:
@@ -262,6 +261,7 @@ export const SONGS: Song[] = [
       { name: "Joni Mitchell", instrument: "vocals, guitar" },
       { name: "Larry Carlton", instrument: "lead guitar" },
       { name: "Jaco Pastorius", instrument: "fretless bass" },
+      { name: "John Guerin", instrument: "drums" },
     ],
     emotionalNote:
       "Jaco removed his bass frets with a butter knife. Without Jaco this song would be folk; with Jaco it's something that in 1976 didn't yet have a name.",
@@ -283,7 +283,7 @@ export const SONGS: Song[] = [
     title: "Blue Motel Room",
     trackNumber: 8,
     duration: "5:03",
-    journey: "guerin",
+    journey: "solo",
     city: "DeSoto Beach Motel, Savannah, GA",
     coords: [-80.85, 32.0],
     symbolDescription:
@@ -291,9 +291,10 @@ export const SONGS: Song[] = [
     inspiredBy:
       "The DeSoto Beach Motel in Savannah, Georgia — a modest, slightly run-down place sitting directly on the beach. Joni stayed there between tour cities during the Guerin tour. The most jazz-oriented song on the album, almost a torch song.",
     highlightQuote:
-      "I've got a blue motel room / with a blue bedspread / I've got the blue blue blues / blue ribbons on my head",
+      "I've got a blue motel room / with a blue bedspread / I've got the blues inside and outside my head",
     personnel: [
-      { name: "Joni Mitchell", instrument: "vocals, acoustic guitar" },
+      { name: "Joni Mitchell", instrument: "vocals, guitar" },
+      { name: "Larry Carlton", instrument: "lead guitar" },
       { name: "Chuck Domanico", instrument: "double bass" },
       { name: "John Guerin", instrument: "drums" },
     ],
