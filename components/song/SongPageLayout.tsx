@@ -24,7 +24,7 @@ const JOURNEY_LABELS: Record<string, string> = {
 const p = (filename: string) => `/photos/${encodeURIComponent(filename)}`;
 
 const SONG_BG_PHOTOS: Record<string, { file: string; pos: string }> = {
-  "coyote":      { file: "Joni black crow skiing no look.jpg", pos: "45% center" },
+  "coyote":      { file: "Joni black crow skiing no look.jpg", pos: "10% center" },
   "amelia":      { file: "Joni smiling pretty, session with sky on her lap.jpg", pos: "center" },
   "furry":       { file: "joni smoking.webp", pos: "center" },
   "strange-boy": { file: "another skiing, very white joni.jfif", pos: "60% center" },
