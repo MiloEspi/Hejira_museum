@@ -64,6 +64,16 @@ export default function UmbralScene() {
     startSequence();
   }, [startSequence]);
 
+  // Automatically enter once the sequence is complete
+  useEffect(() => {
+    if (phase === 4) {
+      const timer = setTimeout(() => {
+        handleEnter();
+      }, 1200);
+      return () => clearTimeout(timer);
+    }
+  }, [phase, handleEnter]);
+
   return (
     <MotionConfig reducedMotion="never">
       <AnimatePresence>
@@ -201,7 +211,7 @@ export default function UmbralScene() {
               phase >= 4 ? "pulse-cta 2.4s ease-in-out infinite" : "none",
           }}
         >
-          — click anywhere to enter —
+          — entering the museum —
         </p>
         </motion.div>
       </AnimatePresence>

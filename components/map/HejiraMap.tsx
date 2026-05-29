@@ -125,7 +125,7 @@ const JOURNEY_ZOOMS: Record<string, { coordinates: [number, number]; zoom: numbe
   // Fits Los Angeles (-118) and Nashville (-86)
   guerin: { coordinates: [-96, 35], zoom: 1.4 },
   // Full view
-  solo: { coordinates: PROJECTION_CONFIG.center, zoom: 1 },
+  solo: { coordinates: [0, 39], zoom: 1 },
 };
 
 export default function HejiraMap() {

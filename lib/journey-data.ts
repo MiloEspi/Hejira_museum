@@ -23,7 +23,7 @@ export const JOURNEYS: Journey[] = [
     fontFamily: "var(--font-italiana), serif",
     vibe: "Bohemian, electric, nocturnal",
     description:
-      "Bob Dylan's itinerant carnival of musicians swept through the Northeast in the autumn of 1975. Joni joined the tour through New England — from Montréal to the small towns of Maine — surrounded by poets, painters, and old friends. The nights were electric and chaotic, the days blurred. Sam Shepard was there. So were masks, spontaneity, and the last embers of the sixties.",
+      "El carnaval itinerante de músicos de Bob Dylan recorrió el noreste en el otoño de 1975. Joni se unió a la gira por Nueva Inglaterra —desde Montreal hasta los pequeños pueblos de Maine— rodeada de poetas, pintores y viejos amigos. Las noches eran eléctricas y caóticas, los días borrosos. Sam Shepard estaba allí. También lo estaban las máscaras, la espontaneidad y las últimas brasas de los años sesenta.",
   },
   {
     slug: "guerin",
@@ -35,7 +35,7 @@ export const JOURNEYS: Journey[] = [
     fontFamily: "var(--font-cormorant-garamond), serif",
     vibe: "Breakup, grey cities, farewell",
     description:
-      "A tour through the American South with drummer John Guerin — her lover and collaborator — that slowly fell apart. The route wound from Los Angeles through desert cities and into the deep South. By Nashville the tour was cancelled. Joni kept going alone. The songs written on this stretch carry the particular weight of an ending that was also a beginning.",
+      "Una gira por el sur de los Estados Unidos con el baterista John Guerin —su amante y colaborador— que poco a poco se desmoronó. La ruta serpenteaba desde Los Ángeles a través de ciudades desérticas hasta el sur profundo. Para cuando llegaron a Nashville, la gira fue cancelada. Joni siguió adelante sola. Las canciones escritas en este tramo cargan el peso particular de un final que también era un comienzo.",
   },
   {
     slug: "solo",
@@ -47,7 +47,7 @@ export const JOURNEYS: Journey[] = [
     fontFamily: "var(--font-courier-prime), monospace",
     vibe: "Luminous solitude, contemplation",
     description:
-      "After the Guerin tour unraveled, Joni drove alone from the Maine coast all the way to Los Angeles — the full width of the country. She stopped in Staten Island to buy a mandolin, visited Chögyam Trungpa in Boulder, drove through the Arizona desert seeing vapor trails. The solitude was not emptiness; it was the whole point. Hejira is this road.",
+      "Después de que la gira con Guerin se deshiciera, Joni condujo sola desde la costa de Maine hasta Los Ángeles, cruzando el ancho entero del país. Se detuvo en Staten Island para comprar una mandolina, visitó a Chögyam Trungpa en Boulder, condujo por el desierto de Arizona viendo las estelas de vapor de los aviones. La soledad no era vacío; era el punto de todo. Hejira es esta carretera.",
   },
 ];
 
