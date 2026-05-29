@@ -89,12 +89,27 @@ export default function UmbralScene() {
         exit={{ opacity: 0 }}
         transition={{ duration: 0.6 }}
       >
+        {/* Album art background as requested */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            backgroundImage: "url('/photos/hejira-album-art.jpg')",
+            backgroundSize: "cover",
+            backgroundPosition: "center 30%",
+            opacity: 0.85,
+            mixBlendMode: "luminosity",
+            zIndex: 0,
+            transform: "scale(1.15)"
+          }}
+        />
+
         {/* Road texture */}
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
             backgroundImage: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.12 0 0 0 0 0.1 0 0 0 0 0.08 0 0 0 0.18 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>")`,
             mixBlendMode: "screen",
+            zIndex: 1,
           }}
         />
         {/* Road center line */}

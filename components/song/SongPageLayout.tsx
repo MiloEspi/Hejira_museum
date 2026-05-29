@@ -361,7 +361,7 @@ export default function SongPageLayout({ song, content }: Props) {
       <section id="gallery" className="song-page__gallery">
         <h2 className="song-page__section-title">Gallery</h2>
         <div className="song-page__gallery-grid">
-          {Object.values(SONG_BG_PHOTOS).map((photoSrc, idx) => (
+          {Object.values(SONG_BG_PHOTOS).slice(0, 3).map((photoSrc, idx) => (
             <div key={idx} className="song-page__gallery-item">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={p(photoSrc)} alt="" style={{width: "100%", height: "100%", objectFit: "cover"}} />

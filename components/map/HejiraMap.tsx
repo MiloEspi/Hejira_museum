@@ -6,6 +6,7 @@ import {
   Geographies,
   Geography,
   Marker,
+  ZoomableGroup,
 } from "react-simple-maps";
 import { geoAlbers } from "d3-geo";
 import { SONGS } from "@/lib/songs-data";
@@ -118,20 +119,43 @@ function catmullRomSpline(points: [number, number][], tension = 0.5): string {
   return d;
 }
 
+const JOURNEY_ZOOMS: Record<string, { coordinates: [number, number]; zoom: number }> = {
+  thunder: { coordinates: [-74, 43], zoom: 2.5 },
+  guerin: { coordinates: [-88, 33], zoom: 2.2 },
+  solo: { coordinates: [-102, 43], zoom: 1.4 },
+};
+
 export default function HejiraMap() {
   const [journeysActive, setJourneysActive] = useState(false);
   const [hoveredSong, setHoveredSong] = useState<string | null>(null);
   const [selectedJourney, setSelectedJourney] = useState<JourneySlug | null>(null);
+  const [position, setPosition] = useState({ coordinates: PROJECTION_CONFIG.center, zoom: 1 });
 
   const handleToggle = useCallback(() => {
     setJourneysActive((prev) => {
-      if (prev) setSelectedJourney(null); // reset selection when turning off
+      if (prev) {
+        setSelectedJourney(null);
+        setPosition({ coordinates: PROJECTION_CONFIG.center, zoom: 1 });
+      }
       return !prev;
     });
   }, []);
 
   const handleSelectJourney = useCallback((slug: JourneySlug | null) => {
     setSelectedJourney(slug);
+    if (slug && JOURNEY_ZOOMS[slug]) {
+      // Note: Because of rotation [97, 0, 0], actual coordinates must offset by 97 longitude 
+      // for the ZoomableGroup center if it doesn't account for rotation directly.
+      // But react-simple-maps ZoomableGroup works with un-rotated coordinates if projection is composed.
+      // Let's just use the real coordinates. The rotate is handled by the projection.
+      setPosition(JOURNEY_ZOOMS[slug]);
+    } else {
+      setPosition({ coordinates: PROJECTION_CONFIG.center, zoom: 1 });
+    }
+  }, []);
+
+  const handleMoveEnd = useCallback((pos: { coordinates: [number, number]; zoom: number }) => {
+    setPosition(pos);
   }, []);
 
   const projection = useMemo(() => {
@@ -208,7 +232,13 @@ export default function HejiraMap() {
           </linearGradient>
         </defs>
 
-        {/* Layer 0: Canada + Mexico from world atlas */}
+        <ZoomableGroup
+          zoom={position.zoom}
+          center={position.coordinates}
+          onMoveEnd={handleMoveEnd}
+          translateExtent={[[0, 0], [MAP_WIDTH, MAP_HEIGHT]]}
+        >
+          {/* Layer 0: Canada + Mexico from world atlas */}
         <Geographies geography={WORLD_TOPO_URL}>
           {({ geographies }) =>
             geographies
@@ -518,6 +548,7 @@ export default function HejiraMap() {
             />
           </Marker>
         ))}
+        </ZoomableGroup>
       </ComposableMap>
 
       {/* UI overlays */}

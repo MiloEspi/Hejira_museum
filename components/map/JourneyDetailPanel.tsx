@@ -29,30 +29,32 @@ export default function JourneyDetailPanel({ journey, onClose }: Props) {
     <div
       style={{
         position: "absolute",
-        bottom: 0,
-        left: 0,
+        top: 0,
         right: 0,
+        bottom: 0,
+        width: "420px",
         zIndex: 10,
         background: "rgba(237, 225, 200, 0.97)",
-        backdropFilter: "blur(6px)",
-        borderTop: `2px solid ${color}`,
-        padding: "14px 28px 16px",
-        display: "grid",
-        gridTemplateColumns: "1fr 1fr 1fr",
-        gap: "20px",
-        boxShadow: "0 -8px 32px rgba(43,29,16,0.18)",
+        backdropFilter: "blur(8px)",
+        borderLeft: `3px solid ${color}`,
+        padding: "60px 40px 40px",
+        display: "flex",
+        flexDirection: "column",
+        gap: "40px",
+        boxShadow: "-12px 0 40px rgba(43,29,16,0.15)",
+        overflowY: "auto",
       }}
     >
-      {/* Left: journey header */}
+      {/* Top: journey header */}
       <div>
         <div
           style={{
             fontFamily: "var(--font-courier-prime), monospace",
-            fontSize: "8px",
+            fontSize: "11px",
             letterSpacing: "0.35em",
             color: color,
             textTransform: "uppercase",
-            marginBottom: "4px",
+            marginBottom: "12px",
           }}
         >
           {data.dateRange}
@@ -60,10 +62,11 @@ export default function JourneyDetailPanel({ journey, onClose }: Props) {
         <div
           style={{
             fontFamily: "var(--font-italiana), serif",
-            fontSize: "20px",
+            fontSize: "42px",
             color: "#1a1008",
-            marginBottom: "6px",
-            letterSpacing: "0.04em",
+            marginBottom: "16px",
+            letterSpacing: "0.02em",
+            lineHeight: 1.1,
           }}
         >
           {data.name}
@@ -71,10 +74,10 @@ export default function JourneyDetailPanel({ journey, onClose }: Props) {
         <div
           style={{
             fontFamily: "var(--font-cormorant-garamond), serif",
-            fontSize: "12px",
+            fontSize: "18px",
             fontStyle: "italic",
             color: "#5a4225",
-            lineHeight: 1.55,
+            lineHeight: 1.6,
           }}
         >
           {data.description}
@@ -86,50 +89,54 @@ export default function JourneyDetailPanel({ journey, onClose }: Props) {
         <div
           style={{
             fontFamily: "var(--font-courier-prime), monospace",
-            fontSize: "8px",
+            fontSize: "11px",
             letterSpacing: "0.3em",
             color: "#8a7355",
             textTransform: "uppercase",
-            marginBottom: "8px",
+            marginBottom: "16px",
+            borderBottom: "1px solid rgba(138, 115, 85, 0.2)",
+            paddingBottom: "8px",
           }}
         >
-          Route
+          Route Sequence
         </div>
-        <div style={{ display: "flex", flexDirection: "column", gap: "2px", maxHeight: "110px", overflowY: "auto" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
           {route.cities.map((city, i) => (
             <div
               key={i}
               style={{
                 fontFamily: "var(--font-im-fell-english), serif",
-                fontSize: "11px",
+                fontSize: "16px",
                 color: "#4a3520",
                 display: "flex",
                 alignItems: "center",
-                gap: "5px",
+                gap: "10px",
               }}
             >
-              <span style={{ width: "4px", height: "4px", borderRadius: "50%", background: color, flexShrink: 0 }} />
+              <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: color, flexShrink: 0 }} />
               {city}
             </div>
           ))}
         </div>
       </div>
 
-      {/* Right: songs */}
+      {/* Bottom: songs */}
       <div>
         <div
           style={{
             fontFamily: "var(--font-courier-prime), monospace",
-            fontSize: "8px",
+            fontSize: "11px",
             letterSpacing: "0.3em",
             color: "#8a7355",
             textTransform: "uppercase",
-            marginBottom: "8px",
+            marginBottom: "16px",
+            borderBottom: "1px solid rgba(138, 115, 85, 0.2)",
+            paddingBottom: "8px",
           }}
         >
-          Songs
+          Songs Written
         </div>
-        <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
           {songs.map((song) => (
             <Link
               key={song.slug}
@@ -138,18 +145,19 @@ export default function JourneyDetailPanel({ journey, onClose }: Props) {
                 textDecoration: "none",
                 display: "flex",
                 flexDirection: "column",
-                padding: "4px 6px",
-                borderRadius: "3px",
-                borderLeft: `2px solid ${color}`,
-                background: `rgba(43,29,16,0.03)`,
-                transition: "background 0.2s",
+                padding: "12px 16px",
+                borderRadius: "4px",
+                borderLeft: `3px solid ${color}`,
+                background: `rgba(43,29,16,0.04)`,
+                transition: "background 0.2s, transform 0.2s",
               }}
             >
               <span
                 style={{
                   fontFamily: "var(--font-italiana), serif",
-                  fontSize: "13px",
+                  fontSize: "20px",
                   color: "#1a1008",
+                  marginBottom: "4px",
                 }}
               >
                 {song.title}
@@ -157,9 +165,10 @@ export default function JourneyDetailPanel({ journey, onClose }: Props) {
               <span
                 style={{
                   fontFamily: "var(--font-courier-prime), monospace",
-                  fontSize: "8px",
+                  fontSize: "10px",
                   color: "#8a7355",
-                  letterSpacing: "0.1em",
+                  letterSpacing: "0.15em",
+                  textTransform: "uppercase",
                 }}
               >
                 {song.city}
@@ -174,18 +183,32 @@ export default function JourneyDetailPanel({ journey, onClose }: Props) {
         onClick={onClose}
         style={{
           position: "absolute",
-          top: "10px",
-          right: "14px",
-          background: "none",
+          top: "20px",
+          right: "24px",
+          background: "rgba(43,29,16,0.06)",
           border: "none",
+          borderRadius: "50%",
+          width: "36px",
+          height: "36px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
           cursor: "pointer",
           fontFamily: "var(--font-courier-prime), monospace",
-          fontSize: "16px",
+          fontSize: "20px",
           color: "#8a7355",
           lineHeight: 1,
-          padding: "2px 4px",
+          transition: "background 0.2s, color 0.2s",
         }}
         aria-label="Close journey panel"
+        onMouseOver={(e) => {
+          e.currentTarget.style.background = "rgba(43,29,16,0.1)";
+          e.currentTarget.style.color = "#4a3520";
+        }}
+        onMouseOut={(e) => {
+          e.currentTarget.style.background = "rgba(43,29,16,0.06)";
+          e.currentTarget.style.color = "#8a7355";
+        }}
       >
         ×
       </button>
