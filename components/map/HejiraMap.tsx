@@ -120,12 +120,6 @@ function catmullRomSpline(points: [number, number][], tension = 0.5): string {
 }
 
 const JOURNEY_ZOOMS: Record<string, { coordinates: [number, number]; zoom: number }> = {
-  thunder: { coordinates: [-74, 43], zoom: 2.5 },
-  guerin: { coordinates: [-88, 33], zoom: 2.2 },
-  solo: { coordinates: PROJECTION_CONFIG.center, zoom: 1 },
-};
-
-const JOURNEY_ZOOMS: Record<string, { coordinates: [number, number]; zoom: number }> = {
   // Offset to the east so the Northeast is positioned on the left, not under the panel
   thunder: { coordinates: [-66, 41], zoom: 2.2 },
   // Fits Los Angeles (-118) and Nashville (-86)
