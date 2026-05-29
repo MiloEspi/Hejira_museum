@@ -38,7 +38,7 @@ export default function SongMarker({
   if (journeysActive) {
     return (
       <motion.g
-        style={{ cursor: "pointer" }}
+        style={{ cursor: "pointer", pointerEvents: "auto" }}
         onHoverStart={onHover}
         onHoverEnd={onLeave}
         onClick={handleClick}
@@ -53,35 +53,35 @@ export default function SongMarker({
 
   return (
     <motion.g
-      style={{ cursor: "pointer" }}
+      style={{ cursor: "pointer", pointerEvents: "auto" }}
       onHoverStart={onHover}
       onHoverEnd={onLeave}
       onClick={handleClick}
       animate={{ scale: isHovered ? 1.4 : 1 }}
       transition={{ type: "spring", stiffness: 320, damping: 22 }}
     >
-      {/* Symbol SVG — smaller (28px) */}
-      <foreignObject x="-16" y="-16" width="32" height="32">
+      {/* Symbol SVG — larger */}
+      <foreignObject x="-30" y="-30" width="60" height="60">
         <div
           style={{
-            width: 32,
-            height: 32,
+            width: 60,
+            height: 60,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
           }}
         >
-          {SymbolComponent && <SymbolComponent size={28} />}
+          {SymbolComponent && <SymbolComponent size={54} />}
         </div>
       </foreignObject>
 
       {/* Song title label */}
       <text
-        y="24"
+        y="38"
         textAnchor="middle"
         style={{
           fontFamily: "var(--font-italiana), serif",
-          fontSize: "12px",
+          fontSize: "14px",
           fontWeight: 400,
           fill: "var(--ink)",
           letterSpacing: "0.04em",
@@ -96,10 +96,10 @@ export default function SongMarker({
 
       {/* Hover preview panel */}
       <foreignObject
-        x="22"
-        y="-55"
-        width="165"
-        height="130"
+        x="36"
+        y="-75"
+        width="220"
+        height="180"
         style={{
           opacity: isHovered ? 1 : 0,
           transition: "opacity 0.22s ease",
@@ -112,18 +112,18 @@ export default function SongMarker({
             background: "rgba(237, 225, 200, 0.97)",
             border: `1.5px solid ${journeyColor}`,
             borderRadius: "4px",
-            padding: "9px 11px 10px",
+            padding: "12px 14px 14px",
             boxShadow: "0 4px 18px rgba(43,29,16,0.22)",
-            width: "165px",
+            width: "220px",
             boxSizing: "border-box",
           }}
         >
           <div
             style={{
               fontFamily: "var(--font-italiana), serif",
-              fontSize: "13px",
+              fontSize: "16px",
               color: "#1a1008",
-              marginBottom: "3px",
+              marginBottom: "4px",
               letterSpacing: "0.03em",
             }}
           >
@@ -132,10 +132,10 @@ export default function SongMarker({
           <div
             style={{
               fontFamily: "var(--font-cormorant-garamond), serif",
-              fontSize: "9.5px",
+              fontSize: "12px",
               fontStyle: "italic",
               color: "#6a4e28",
-              marginBottom: "6px",
+              marginBottom: "8px",
             }}
           >
             {song.city}
@@ -143,13 +143,13 @@ export default function SongMarker({
           <div
             style={{
               fontFamily: "var(--font-courier-prime), monospace",
-              fontSize: "8px",
+              fontSize: "10px",
               color: "#8a7355",
               letterSpacing: "0.12em",
               textTransform: "uppercase",
-              marginBottom: "6px",
+              marginBottom: "8px",
               borderTop: `1px solid rgba(196,162,101,0.3)`,
-              paddingTop: "5px",
+              paddingTop: "6px",
             }}
           >
             {song.duration} · track {song.trackNumber}
@@ -157,7 +157,7 @@ export default function SongMarker({
           <div
             style={{
               fontFamily: "var(--font-im-fell-english), serif",
-              fontSize: "8.5px",
+              fontSize: "12px",
               fontStyle: "italic",
               color: "#5a4225",
               lineHeight: 1.45,

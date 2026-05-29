@@ -124,21 +124,21 @@ const JOURNEY_ZOOMS: Record<string, { coordinates: [number, number]; zoom: numbe
   thunder: { coordinates: [-66, 41], zoom: 2.2 },
   // Fits Los Angeles (-118) and Nashville (-86)
   guerin: { coordinates: [-96, 35], zoom: 1.4 },
-  // Full view
-  solo: { coordinates: [0, 39], zoom: 1 },
+  // Fits the entire country alongside the 400px side panel by slightly zooming out and shifting center
+  solo: { coordinates: [-85, 39], zoom: 0.85 },
 };
 
 export default function HejiraMap() {
   const [journeysActive, setJourneysActive] = useState(false);
   const [hoveredSong, setHoveredSong] = useState<string | null>(null);
   const [selectedJourney, setSelectedJourney] = useState<JourneySlug | null>(null);
-  const [position, setPosition] = useState({ coordinates: PROJECTION_CONFIG.center, zoom: 1 });
+  const [position, setPosition] = useState({ coordinates: [-97, 39] as [number, number], zoom: 1 });
 
   const handleToggle = useCallback(() => {
     setJourneysActive((prev) => {
       if (prev) {
         setSelectedJourney(null);
-        setPosition({ coordinates: PROJECTION_CONFIG.center, zoom: 1 });
+        setPosition({ coordinates: [-97, 39], zoom: 1 });
       }
       return !prev;
     });
@@ -149,7 +149,7 @@ export default function HejiraMap() {
     if (slug && JOURNEY_ZOOMS[slug]) {
       setPosition(JOURNEY_ZOOMS[slug]);
     } else {
-      setPosition({ coordinates: PROJECTION_CONFIG.center, zoom: 1 });
+      setPosition({ coordinates: [-97, 39], zoom: 1 });
     }
   }, []);
 
@@ -198,7 +198,7 @@ export default function HejiraMap() {
         }}
         width={MAP_WIDTH}
         height={MAP_HEIGHT}
-        style={{ width: "100%", height: "100%" }}
+        style={{ width: "100%", height: "100%", pointerEvents: "none" }}
       >
         <defs>
           <filter id="watercolor-soft" x="-5%" y="-5%" width="110%" height="110%">
@@ -481,29 +481,28 @@ export default function HejiraMap() {
                   transition: "opacity 0.4s, stroke-width 0.4s",
                 }}
               />
-              {/* Waypoint dots — visible when this journey is selected */}
               {isSelected && waypoints.map((wp, i) => (
                 <g key={i}>
                   <circle
                     cx={wp.coords[0]}
                     cy={wp.coords[1]}
-                    r="5"
+                    r={5 / position.zoom}
                     fill={style.color}
                     stroke="var(--paper)"
-                    strokeWidth="1.5"
+                    strokeWidth={1.5 / position.zoom}
                     opacity="0.92"
                   />
                   <text
                     x={wp.coords[0]}
-                    y={wp.coords[1] - 8}
+                    y={wp.coords[1] - (10 / position.zoom)}
                     textAnchor="middle"
                     style={{
                       fontFamily: "var(--font-courier-prime), monospace",
-                      fontSize: "7.5px",
+                      fontSize: `${9.5 / position.zoom}px`,
                       fill: style.color,
                       paintOrder: "stroke",
                       stroke: "var(--paper)",
-                      strokeWidth: "2.5px",
+                      strokeWidth: `${2.5 / position.zoom}px`,
                       strokeLinejoin: "round",
                       letterSpacing: "0.05em",
                     }}
@@ -537,7 +536,7 @@ export default function HejiraMap() {
 
         {/* Layer 5: Song markers */}
         {SONGS.map((song) => (
-          <Marker key={song.slug} coordinates={song.coords}>
+          <Marker key={song.slug} coordinates={song.coords} style={{ pointerEvents: "auto" }}>
             <SongMarker
               song={song}
               isHovered={hoveredSong === song.slug}
@@ -562,7 +561,7 @@ export default function HejiraMap() {
           journey={selectedJourney}
           onClose={() => {
             setSelectedJourney(null);
-            setPosition({ coordinates: PROJECTION_CONFIG.center, zoom: 1 });
+            setPosition({ coordinates: [-97, 39], zoom: 1 });
           }}
         />
       )}
