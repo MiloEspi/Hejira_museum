@@ -69,7 +69,13 @@ export default function UmbralScene() {
       <AnimatePresence>
         <motion.div
         ref={scope}
-        className="fixed inset-0 w-screen h-screen bg-black flex items-center justify-center cursor-pointer overflow-hidden z-50"
+        className="fixed inset-0 w-screen h-screen flex items-center justify-center cursor-pointer overflow-hidden z-50"
+        style={{
+          background: `
+            radial-gradient(ellipse 120% 100% at 50% 60%, #1a1510 0%, #2a2218 40%, #1a1510 80%),
+            linear-gradient(180deg, #121010 0%, #1e1a14 50%, #0f0d0a 100%)
+          `,
+        }}
         onClick={phase >= 4 ? handleEnter : undefined}
         onKeyDown={(e) => {
           if ((e.key === "Enter" || e.key === " ") && phase >= 4) {
@@ -83,6 +89,24 @@ export default function UmbralScene() {
         exit={{ opacity: 0 }}
         transition={{ duration: 0.6 }}
       >
+        {/* Road texture */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            backgroundImage: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.12 0 0 0 0 0.1 0 0 0 0 0.08 0 0 0 0.18 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>")`,
+            mixBlendMode: "screen",
+          }}
+        />
+        {/* Road center line */}
+        <div
+          className="absolute left-1/2 top-0 bottom-0 pointer-events-none"
+          style={{
+            width: "2px",
+            background: "repeating-linear-gradient(180deg, rgba(196,162,101,0.08) 0px, rgba(196,162,101,0.08) 40px, transparent 40px, transparent 80px)",
+            transform: "translateX(-50%)",
+          }}
+        />
+
         {/* Wind layer */}
         <div
           id="wind-layer"
