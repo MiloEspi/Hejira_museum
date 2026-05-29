@@ -18,46 +18,39 @@ export default function UmbralScene() {
     hasStarted.current = true;
     setPhase(1);
 
-    // t=0.6s — wind layer
-    await animate("#wind-layer", { opacity: 1 }, { duration: 1.4, ease: "easeOut", delay: 0.6 });
+    // t=0.2s — wind layer
+    animate("#wind-layer", { opacity: 1 }, { duration: 0.5, ease: "easeOut", delay: 0.2 });
 
-    // t=1.8s — silhouette + snow
+    // t=0.5s — silhouette + snow
     setPhase(2);
-    await animate("#joni-wrapper", { opacity: 1 }, { duration: 1.6, ease: "easeOut" });
+    animate("#joni-wrapper", { opacity: 1 }, { duration: 0.8, ease: "easeOut", delay: 0.5 });
 
-    // t=3.4s — subtitle text
+    // t=1.0s — subtitle text
     setPhase(3);
-    await animate("#subtitle", { opacity: 1 }, { duration: 1.2, ease: "easeOut", delay: 0.2 });
+    animate("#subtitle", { opacity: 1 }, { duration: 0.6, ease: "easeOut", delay: 1.0 });
 
-    // title "Hejira" after 0.8s
-    await animate("#title-hejira", { opacity: 1, y: 0 }, { duration: 1.4, ease: "easeOut", delay: 0.6 });
+    // title "Hejira" after 1.4s
+    await animate("#title-hejira", { opacity: 1, y: 0 }, { duration: 0.8, ease: "easeOut", delay: 1.4 });
 
-    // t=5.0s — CTA
+    // t=2.2s — CTA
     setPhase(4);
-    await animate("#cta", { opacity: 1 }, { duration: 1, ease: "easeOut", delay: 0.4 });
+    await animate("#cta", { opacity: 1 }, { duration: 0.5, ease: "easeOut" });
   }, [animate]);
 
   const handleEnter = useCallback(async () => {
-    if (isExiting || phase < 4) return;
+    if (isExiting) return; // Allow skipping at any phase
     setIsExiting(true);
 
-    // Exit choreography: silhouette shrinks and fades
-    animate(
-      "#joni-wrapper",
-      { opacity: 0, scale: 0.85 },
-      { duration: 0.8, ease: "easeIn" }
-    );
-    animate("#subtitle", { opacity: 0 }, { duration: 0.4 });
-    animate("#title-hejira", { opacity: 0 }, { duration: 0.4 });
+    // Fast exit choreography
+    animate("#joni-wrapper", { opacity: 0, scale: 0.95 }, { duration: 0.4 });
+    animate("#subtitle", { opacity: 0 }, { duration: 0.2 });
+    animate("#title-hejira", { opacity: 0 }, { duration: 0.2 });
     animate("#cta", { opacity: 0 }, { duration: 0.2 });
-
-    // Snow lingers 0.4s more
-    await new Promise((r) => setTimeout(r, 800));
     animate("#snow-wrapper", { opacity: 0 }, { duration: 0.4 });
 
     await new Promise((r) => setTimeout(r, 400));
     router.push("/the-map");
-  }, [isExiting, phase, animate, router]);
+  }, [isExiting, animate, router]);
 
   // Auto-start the choreography on mount
   useEffect(() => {
