@@ -290,23 +290,36 @@
   color: var(--ink-soft);
   cursor: default;
   position: relative;
+  transition: color 0.3s, text-shadow 0.3s;
 }
 
-.song-page__lyric-line--annotated {
+.song-page__lyric-block.song-page__lyric-line--annotated {
   cursor: pointer;
-  border-bottom: 1.5px dashed var(--accent-border, rgba(196, 162, 101, 0.65));
-  padding: 2px 0;
-  transition: color 0.3s, border-color 0.3s, text-shadow 0.3s, background 0.3s;
+  border-left: 2px dashed var(--accent, #C4A265);
+  background: rgba(43, 29, 16, 0.04);
+  padding-left: 16px;
+  margin-left: -18px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  transition: border-color 0.3s, background 0.3s, border-width 0.2s;
 }
 
-.song-page__lyric-line--annotated:hover {
+.song-page__lyric-block.song-page__lyric-line--annotated .song-page__lyric-line {
   color: var(--ink);
-  border-color: var(--accent, #C4A265);
-  text-shadow: 0 0 18px var(--accent-glow, rgba(196, 162, 101, 0.28));
-  background: var(--accent-soft, rgba(196, 162, 101, 0.06));
+  font-weight: 500;
 }
 
-.song-page__lyric-line--annotated:hover .song-page__annotation-indicator {
+.song-page__lyric-block.song-page__lyric-line--annotated:hover {
+  border-left: 3px solid var(--accent, #C4A265);
+  background: var(--accent-soft, rgba(196, 162, 101, 0.12));
+}
+
+.song-page__lyric-block.song-page__lyric-line--annotated:hover .song-page__lyric-line {
+  color: var(--ink);
+  text-shadow: 0 0 18px var(--accent-glow, rgba(196, 162, 101, 0.28));
+}
+
+.song-page__lyric-block.song-page__lyric-line--annotated:hover .song-page__annotation-indicator {
   animation: indicatorPulse 0.8s ease-in-out;
 }
 

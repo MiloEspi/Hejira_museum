@@ -3,6 +3,7 @@ import { lyrics } from "./lyrics";
 export interface LyricLine {
   text: string;
   annotation?: string;
+  annotationSpan?: number;
 }
 
 export interface LyricSection {
@@ -31,7 +32,7 @@ export interface SongContent {
   photoshootNote?: string;
 }
 
-type AnnotationMap = Record<string, string>; // "stanza-line" -> annotation
+type AnnotationMap = Record<string, string | { text: string, span: number }>; // "stanza-line" -> annotation
 
 function buildLyrics(slug: string, annotations: AnnotationMap = {}): LyricSection[] {
   const stanzas = lyrics[slug];
@@ -42,7 +43,13 @@ function buildLyrics(slug: string, annotations: AnnotationMap = {}): LyricSectio
     label: ROMAN[si] || `${si + 1}`,
     lines: lines.map((text, li) => {
       const key = `${si}-${li}`;
-      return annotations[key] ? { text, annotation: annotations[key] } : { text };
+      const val = annotations[key];
+      if (val) {
+        return typeof val === "string" 
+          ? { text, annotation: val } 
+          : { text, annotation: val.text, annotationSpan: val.span };
+      }
+      return { text };
     }),
   }));
 }
@@ -61,7 +68,7 @@ export const ALL_SONG_CONTENT: Record<string, SongContent> = {
       "0-0": "El apodo de Sam Shepard. Joni lo compara con un coyote: astuto, esquivo, imposible de domesticar. 'Sin arrepentimientos' establece el tono del álbum entero.",
       "2-3": "Las líneas blancas de la autopista como prisión — la carretera que libera también atrapa, una metáfora constante.",
       "5-1": "Baljennie, Saskatchewan: una aldea agrícola cerca de Maidstone, representando las raíces agrarias de la narradora frente al mundo de Shepard.",
-      "7-2": "El rastro de intimidad aún en sus dedos. Realismo sin sentimentalismo.",
+      "7-0": { text: "Joni observa al Coyote observar a otra mujer. La escena del diner es cinematográfica...", span: 4 },
       "7-4": "El Coyote está demasiado lejos de la Bahía de Fundy en Nueva Escocia (donde Shepard pasaba sus veranos), lo que subraya la incompatibilidad geográfica de ambos."
     }),
     references: [
@@ -108,8 +115,7 @@ export const ALL_SONG_CONTENT: Record<string, SongContent> = {
     ],
     joniQuote: "I was driving through the desert and I saw six jet planes leaving six long white vapor trails across the sky. And I thought of the six strings of my guitar. And I thought of Amelia Earhart.",
     lyrics: buildLyrics("amelia", {
-      "0-0": "El desierto de Mojave o Arizona, donde la escala abrumadora y la monotonía sirven de espejo del agotamiento emocional.",
-      "0-2": "Las seis estelas equivalentes a seis cuerdas; interconexión entre la maquinaria del vuelo y la creación musical.",
+      "0-0": { text: "El desierto de Mojave o Arizona, donde la escala abrumadora y la monotonía sirven de espejo del agotamiento emocional. Las seis estelas equivalentes a seis cuerdas; interconexión entre la maquinaria del vuelo y la creación musical.", span: 3 },
       "4-1": "Amelia desapareció sobre el Océano Pacífico en 1937, 'tragada por el cielo'. Un espejo mitológico de las compulsiones nómadas.",
       "5-2": "El vuelo en altitudes heladas es la metáfora central del aislamiento emocional y el miedo al compromiso.",
       "6-0": "Cactus Tree Motel, un modesto establecimiento de carretera, respiro temporal a su sed de vagabundeo."
@@ -206,9 +212,9 @@ export const ALL_SONG_CONTENT: Record<string, SongContent> = {
       "La estructura lírica expone un giro dialéctico brillante: primero se drogan con viajes, luego con alcohol, para concluir que el amor es el veneno y la medicina más fuerte de todos. Esta narrativa cristaliza la tensión de desafiar las reglas rígidas de una posada puritana mientras se entrega a una pasión condenada."
     ],
     lyrics: buildLyrics("a-strange-boy", {
-      "0-0": "La musa de la canción, inspirada en un auxiliar de vuelo que viajó con Joni.",
-      "1-1": "La inmadurez del chico es un tema central; vive con sus padres y se aferra a la infancia.",
-      "3-3": "Intoxicación Dialéctica: la euforia cambia de fuente (viajes → alcohol → amor) en tres líneas consecutivas.",
+      "0-0": { text: "La musa de la canción, inspirada en un auxiliar de vuelo que viajó con Joni.", span: 2 },
+      "1-1": { text: "La inmadurez del chico es un tema central; vive con sus padres y se aferra a la infancia.", span: 3 },
+      "3-3": { text: "Intoxicación Dialéctica: la euforia cambia de fuente (viajes → alcohol → amor) en tres líneas consecutivas.", span: 3 },
       "5-10": "El choque entre las 'rígidas reglas de la casa de las mujeres de cabello azul' puritana y la moral libre nómada."
     }),
     references: [
@@ -248,9 +254,9 @@ export const ALL_SONG_CONTENT: Record<string, SongContent> = {
     lyrics: buildLyrics("hejira", {
       "0-2": "La deserción de las 'pequeñas guerras' domésticas. Elige la carretera como territorio de escape con honor.",
       "3-7": "Entre los fórceps del parto y la lápida de piedra — la inmensidad y superficialidad del arco de la vida humana resumida en una línea.",
-      "4-0": "Los marcadores de granito: una meditación sobre la finalidad, la muerte y la permanencia frente a lo efímero de la gira.",
+      "4-0": { text: "Los marcadores de granito: una meditación sobre la finalidad, la muerte y la permanencia frente a lo efímero de la gira.", span: 2 },
       "4-3": "La admisión franca del propósito último del artista: documentar el sufrimiento para lograr la 'inmortalidad' a través de las obras.",
-      "6-2": "Aceptar la necesidad de huir 'hasta que el amor vuelva a succionarme hacia ese camino'."
+      "6-2": { text: "Aceptar la necesidad de huir 'hasta que el amor vuelva a succionarme hacia ese camino'.", span: 2 }
     }),
     references: [
       {
@@ -345,10 +351,9 @@ export const ALL_SONG_CONTENT: Record<string, SongContent> = {
     ],
     joniQuote: "I was driving back to L.A., and I saw a black crow flying. And I thought: that's me. That's exactly me. Looking for something shiny on the ground, picking it up, flying off again.",
     lyrics: buildLyrics("black-crow", {
-      "0-4": "El cuervo que se lanza en picada tras objetos brillantes, metáfora cruda de la búsqueda del artista por aplausos y recompensas efímeras.",
-      "1-0": "La enumeración implacable y logística: transbordador a la autopista.",
-      "1-2": "Avión a taxi y taxi a tren: el caos y el agotamiento crónico de una vida en movimiento perpetuo lejos de la Sunshine Coast.",
-      "2-0": "El núcleo temático del disco: la dualidad entre el deseo de iluminación puramente espiritual y la corrupción egocéntrica que conlleva el negocio musical."
+      "0-4": { text: "El cuervo que se lanza en picada tras objetos brillantes, metáfora cruda de la búsqueda del artista por aplausos y recompensas efímeras.", span: 2 },
+      "1-0": { text: "La enumeración implacable y logística del caos y el agotamiento crónico de una vida en movimiento perpetuo lejos de la Sunshine Coast: transbordador a la autopista, avión a taxi y taxi a tren.", span: 4 },
+      "2-0": { text: "El núcleo temático del disco: la dualidad entre el deseo de iluminación puramente espiritual y la corrupción egocéntrica que conlleva el negocio musical.", span: 4 }
     }),
     references: [
       {
@@ -385,10 +390,10 @@ export const ALL_SONG_CONTENT: Record<string, SongContent> = {
       "Musicalmente se destaca por el contrabajo acústico de Chuck Domanico, que reemplaza al fretless de Pastorius, brindando una textura tradicional de club de posguerra que ancla las armonías irónicas de la oferta de tregua."
     ],
     lyrics: buildLyrics("blue-motel-room", {
-      "0-0": "El DeSoto Beach Motel en Savannah, Georgia. El color físico de la decoración refuerza la depresión emocional.",
+      "0-0": { text: "El DeSoto Beach Motel en Savannah, Georgia. El color físico de la decoración refuerza la depresión emocional.", span: 2 },
       "1-0": "Savannah, la geografía de cuarentena y limbo durante la gira.",
-      "6-0": "Metáfora de la Guerra Fría: comparando el puntaje y los egos de la pareja con la tensión nuclear entre EE.UU. y la URSS.",
-      "7-0": "La Oferta de Tregua: un pacto condicionado de dejar el 'refugio de las carreteras' si él abandona las trampas en la ciudad."
+      "6-0": { text: "Metáfora de la Guerra Fría: comparando el puntaje y los egos de la pareja con la tensión nuclear entre EE.UU. y la URSS.", span: 2 },
+      "7-0": { text: "La Oferta de Tregua: un pacto condicionado de dejar el 'refugio de las carreteras' si él abandona las trampas en la ciudad.", span: 4 }
     }),
     references: [
       {
@@ -426,11 +431,10 @@ export const ALL_SONG_CONTENT: Record<string, SongContent> = {
     ],
     joniQuote: "In a highway service station, I saw a photograph of the earth taken coming back from the moon. And I thought: if we could see ourselves from that distance, all our petty wars would end.",
     lyrics: buildLyrics("refuge-of-the-roads", {
-      "0-0": "Chögyam Trungpa, maestro budista que bebía, era mujeriego pero poseía una brillante 'cordura' clarificadora.",
-      "2-4": "El conflicto Iluminación vs. Neurosis Artística: la artista debe sobreanalizar todo, espantando a los que le rodean.",
+      "0-0": { text: "Chögyam Trungpa, maestro budista que bebía, era mujeriego pero poseía una brillante 'cordura' clarificadora.", span: 3 },
+      "2-4": { text: "El conflicto Iluminación vs. Neurosis Artística: la artista debe sobreanalizar todo, espantando a los que le rodean.", span: 4 },
       "5-0": "La estación de servicio donde se encuentra el clímax visual de todo el peregrinaje.",
-      "5-3": "La fotografía Earthrise del Apolo 8, que aporta la perspectiva cósmica final.",
-      "5-5": "La Tierra vista como una bola de boliche jaspeada, reduciendo la importancia de las fronteras y el dolor humano."
+      "5-2": { text: "La fotografía Earthrise del Apolo 8, que aporta la perspectiva cósmica final. La Tierra vista como una bola de boliche jaspeada, reduciendo la importancia de las fronteras y el dolor humano.", span: 4 }
     }),
     references: [
       {

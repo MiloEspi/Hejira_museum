@@ -182,34 +182,48 @@ export default function SongPageLayout({ song, content }: Props) {
           {content.lyrics.map((section) => (
             <div key={section.id} className="song-page__lyric-section">
               <div className="song-page__lyric-label">{section.label}</div>
-              {section.lines.map((line, lineIdx) => {
-                const lineId = `${section.id}-${lineIdx}`;
-                const hasAnnotation = !!line.annotation;
-                const isOpen = openAnnotation === lineId;
-                return (
-                  <div key={lineIdx}>
-                    <div
-                      className={`song-page__lyric-line ${hasAnnotation ? "song-page__lyric-line--annotated" : ""}`}
-                      onClick={hasAnnotation ? () => toggleAnnotation(lineId) : undefined}
-                      role={hasAnnotation ? "button" : undefined}
-                      tabIndex={hasAnnotation ? 0 : undefined}
-                      onKeyDown={hasAnnotation ? (e) => { if (e.key === "Enter") toggleAnnotation(lineId); } : undefined}
-                    >
-                      {line.text}
+              {(() => {
+                const elements = [];
+                let i = 0;
+                while (i < section.lines.length) {
+                  const line = section.lines[i];
+                  const lineId = `${section.id}-${i}`;
+                  const hasAnnotation = !!line.annotation;
+                  const span = line.annotationSpan || 1;
+                  const blockLines = section.lines.slice(i, i + span);
+                  const isOpen = openAnnotation === lineId;
+
+                  elements.push(
+                    <div key={i} className="song-page__lyric-block-wrapper">
+                      <div
+                        className={`song-page__lyric-block ${hasAnnotation ? "song-page__lyric-line--annotated" : ""}`}
+                        onClick={hasAnnotation ? () => toggleAnnotation(lineId) : undefined}
+                        role={hasAnnotation ? "button" : undefined}
+                        tabIndex={hasAnnotation ? 0 : undefined}
+                        onKeyDown={hasAnnotation ? (e) => { if (e.key === "Enter") toggleAnnotation(lineId); } : undefined}
+                      >
+                        {blockLines.map((bLine, bIdx) => (
+                          <div key={bIdx} className="song-page__lyric-line">
+                            {bLine.text}
+                            {hasAnnotation && bIdx === 0 && (
+                              <span className="song-page__annotation-indicator">↗</span>
+                            )}
+                          </div>
+                        ))}
+                      </div>
                       {hasAnnotation && (
-                        <span className="song-page__annotation-indicator">↗</span>
+                        <div className={`song-page__annotation ${isOpen ? "song-page__annotation--open" : ""}`}>
+                          <div className="song-page__annotation-text">
+                            {line.annotation}
+                          </div>
+                        </div>
                       )}
                     </div>
-                    {hasAnnotation && (
-                      <div className={`song-page__annotation ${isOpen ? "song-page__annotation--open" : ""}`}>
-                        <div className="song-page__annotation-text">
-                          {line.annotation}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
+                  );
+                  i += span;
+                }
+                return elements;
+              })()}
             </div>
           ))}
         </section>
