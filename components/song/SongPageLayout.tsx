@@ -25,11 +25,41 @@ const JOURNEY_COLORS: Record<string, string> = {
   solo: "#8a5a2b",
 };
 
+const p = (filename: string) => `/photos/${encodeURIComponent(filename)}`;
+
+const SONG_BG_PHOTOS: Record<string, string> = {
+  "coyote":      "Joni black crow skiing no look.jpg",
+  "amelia":      "another skiing, very white joni.jfif",
+  "furry":       "joni smoking.webp",
+  "strange-boy": "Joni smiling pretty, session with sky on her lap.jpg",
+  "hejira":      "GREAT image, joni skiing ice, for background great.jfif",
+  "sharon":      "Hejira album art, TOP ONLY, from chest.webp",
+  "black-crow":  "Hejira winter ice black crow smiling.jfif",
+  "blue-motel":  "Joni french model, black crow sitting down.webp",
+  "refuge":      "Very edited photo, hand man, black crow.webp",
+};
+
+const GALLERY_PHOTOS = [
+  { file: "GREAT image, joni skiing ice, for background great.jfif", caption: "Lake Mendota, 1976" },
+  { file: "Hejira winter ice black crow smiling.jfif",                caption: "The album sessions" },
+  { file: "Joni black crow skiing no look.jpg",                       caption: "Skating away" },
+  { file: "French model joni, eyes closed.jfif",                      caption: "Paris, 1975" },
+  { file: "Joni french model, black crow sitting down.webp",          caption: "Continental portrait" },
+  { file: "Joni smiling pretty, session with sky on her lap.jpg",     caption: "With Sky" },
+  { file: "another skiing, very white joni.jfif",                     caption: "White winter" },
+  { file: "Hejira album art, TOP ONLY, from chest.webp",              caption: "Album sessions" },
+  { file: "Very edited photo, hand man, black crow.webp",             caption: "In motion" },
+  { file: "joni smoking.webp",                                        caption: "Studio session" },
+  { file: "Joni unedited album art.jpg",                              caption: "Album art, unedited" },
+  { file: "hejira-albumart.jpg",                                      caption: "Hejira — official" },
+];
+
 export default function SongPageLayout({ song, content }: Props) {
   const router = useRouter();
   const [openAnnotation, setOpenAnnotation] = useState<string | null>(null);
   const [openReference, setOpenReference] = useState<string | null>(null);
   const storyRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const bgPhoto = SONG_BG_PHOTOS[song.slug];
 
   const songIndex = SONGS.findIndex((s) => s.slug === song.slug);
   const prevSong = songIndex > 0 ? SONGS[songIndex - 1] : null;
@@ -111,6 +141,14 @@ export default function SongPageLayout({ song, content }: Props) {
       <header className="song-page__hero" style={{
         background: `linear-gradient(180deg, ${content.heroGradient[0]} 0%, ${content.heroGradient[1]} 50%, ${content.heroGradient[2]} 100%)`,
       }}>
+        {/* Album art background — always present, low opacity */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/photos/hejira-albumart.jpg"
+          alt=""
+          className="song-page__hero-bg"
+          aria-hidden="true"
+        />
         <div className="song-page__hero-overlay" />
         <div className="song-page__hero-content">
           {SymbolIcon && (
@@ -147,7 +185,11 @@ export default function SongPageLayout({ song, content }: Props) {
       )}
 
       {/* Main Content */}
-      <div className="song-page__content">
+      <div className={`song-page__content${bgPhoto ? " song-page__section-bg-wrap" : ""}`}>
+        {bgPhoto && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={p(bgPhoto)} alt="" className="song-page__section-bg-img" aria-hidden="true" />
+        )}
         {/* Lyrics Column */}
         <section className="song-page__lyrics">
           <h2 className="song-page__section-title">The Song</h2>
@@ -308,6 +350,25 @@ export default function SongPageLayout({ song, content }: Props) {
           </div>
         </section>
       )}
+
+      {/* Photo Gallery */}
+      <section className="song-page__gallery">
+        <h2 className="song-page__section-title">Photos</h2>
+        <div className="song-page__gallery-grid">
+          {GALLERY_PHOTOS.map(({ file, caption }) => (
+            <div key={file} className="song-page__gallery-item">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={p(file)}
+                alt={caption}
+                className="song-page__gallery-photo"
+                loading="lazy"
+              />
+              <div className="song-page__gallery-caption">{caption}</div>
+            </div>
+          ))}
+        </div>
+      </section>
 
       {/* Navigation Footer */}
       <footer className="song-page__footer">

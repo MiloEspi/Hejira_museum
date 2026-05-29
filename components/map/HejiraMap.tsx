@@ -11,10 +11,12 @@ import { geoAlbers } from "d3-geo";
 import { SONGS } from "@/lib/songs-data";
 
 import { ROUTES } from "@/lib/routes-coords";
+import type { JourneySlug } from "@/lib/songs-data";
 import SongMarker from "./SongMarker";
 import JourneyToggle from "./JourneyToggle";
 import MapLegend from "./MapLegend";
 import MapDetails from "./MapDetails";
+import JourneyDetailPanel from "./JourneyDetailPanel";
 
 const US_TOPO_URL = "/maps/us-states-10m.json";
 const WORLD_TOPO_URL = "/maps/countries-50m.json";
@@ -23,12 +25,12 @@ const MAP_WIDTH = 980;
 const MAP_HEIGHT = 720;
 
 /* ───────── Projection config ───────── */
-/* Shifted north & zoomed out slightly to show BC + Saskatchewan */
+/* Zoomed in — EEUU fills the view, Saskatchewan (Coyote) still visible at top */
 const PROJECTION_CONFIG = {
   rotate: [96, 0, 0] as [number, number, number],
-  center: [0, 46] as [number, number],
+  center: [0, 38] as [number, number],
   parallels: [29, 55] as [number, number],
-  scale: 820,
+  scale: 1100,
 };
 
 /* ───────── Regional watercolor palette — high contrast ───────── */
@@ -119,9 +121,17 @@ function catmullRomSpline(points: [number, number][], tension = 0.5): string {
 export default function HejiraMap() {
   const [journeysActive, setJourneysActive] = useState(false);
   const [hoveredSong, setHoveredSong] = useState<string | null>(null);
+  const [selectedJourney, setSelectedJourney] = useState<JourneySlug | null>(null);
 
   const handleToggle = useCallback(() => {
-    setJourneysActive((prev) => !prev);
+    setJourneysActive((prev) => {
+      if (prev) setSelectedJourney(null); // reset selection when turning off
+      return !prev;
+    });
+  }, []);
+
+  const handleSelectJourney = useCallback((slug: JourneySlug | null) => {
+    setSelectedJourney(slug);
   }, []);
 
   const projection = useMemo(() => {
@@ -135,15 +145,20 @@ export default function HejiraMap() {
 
   const routePaths = useMemo(() => {
     return ROUTES.map((route) => {
-      const projected = route.waypoints
-        .map((wp) => projection(wp))
-        .filter((p): p is [number, number] => p !== null);
+      const projectedPoints: { coords: [number, number]; city: string }[] = [];
+      route.waypoints.forEach((wp, i) => {
+        const proj = projection(wp);
+        if (proj) {
+          projectedPoints.push({ coords: proj, city: route.cities[i] || "" });
+        }
+      });
+      const coords = projectedPoints.map((pt) => pt.coords);
 
       return {
         journey: route.journey,
-        d: catmullRomSpline(projected),
-        // For the guerin fade: compute the last projected point
-        lastPoint: projected.length > 0 ? projected[projected.length - 1] : null,
+        d: catmullRomSpline(coords),
+        lastPoint: coords.length > 0 ? coords[coords.length - 1] : null,
+        waypoints: projectedPoints,
       };
     });
   }, [projection]);
@@ -400,9 +415,12 @@ export default function HejiraMap() {
         </g>
 
         {/* Layer 4: Journey routes — curved Catmull-Rom splines */}
-        {routePaths.map(({ journey, d }) => {
+        {routePaths.map(({ journey, d, waypoints }) => {
           const style = JOURNEY_STYLES[journey] || JOURNEY_STYLES.solo;
           const isActive = journeysActive;
+          const isSelected = selectedJourney === journey;
+          const isDeselected = selectedJourney !== null && !isSelected;
+          const routeOpacity = isDeselected ? 0.08 : isActive ? style.opacity : style.opacity * 0.7;
 
           return (
             <g key={journey}>
@@ -410,12 +428,12 @@ export default function HejiraMap() {
               <path
                 d={d}
                 stroke={style.glow}
-                strokeWidth={isActive ? 8 : 5}
+                strokeWidth={isSelected ? 10 : isActive ? 8 : 5}
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 fill="none"
                 style={{
-                  opacity: isActive ? 0.6 : 0.3,
+                  opacity: isDeselected ? 0.04 : isActive ? 0.6 : 0.3,
                   transition: "opacity 0.4s, stroke-width 0.4s",
                 }}
                 filter="url(#route-glow)"
@@ -424,16 +442,47 @@ export default function HejiraMap() {
               <path
                 d={d}
                 stroke={journey === "guerin" ? "url(#guerin-fade)" : style.color}
-                strokeWidth={isActive ? 3.5 : style.width}
+                strokeWidth={isSelected ? 4.5 : isActive ? 3.5 : style.width}
                 strokeDasharray={style.dasharray}
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 fill="none"
                 style={{
-                  opacity: isActive ? style.opacity : style.opacity * 0.7,
+                  opacity: routeOpacity,
                   transition: "opacity 0.4s, stroke-width 0.4s",
                 }}
               />
+              {/* Waypoint dots — visible when this journey is selected */}
+              {isSelected && waypoints.map((wp, i) => (
+                <g key={i}>
+                  <circle
+                    cx={wp.coords[0]}
+                    cy={wp.coords[1]}
+                    r="5"
+                    fill={style.color}
+                    stroke="var(--paper)"
+                    strokeWidth="1.5"
+                    opacity="0.92"
+                  />
+                  <text
+                    x={wp.coords[0]}
+                    y={wp.coords[1] - 8}
+                    textAnchor="middle"
+                    style={{
+                      fontFamily: "var(--font-courier-prime), monospace",
+                      fontSize: "7.5px",
+                      fill: style.color,
+                      paintOrder: "stroke",
+                      stroke: "var(--paper)",
+                      strokeWidth: "2.5px",
+                      strokeLinejoin: "round",
+                      letterSpacing: "0.05em",
+                    }}
+                  >
+                    {wp.city}
+                  </text>
+                </g>
+              ))}
             </g>
           );
         })}
@@ -465,6 +514,7 @@ export default function HejiraMap() {
               isHovered={hoveredSong === song.slug}
               onHover={() => setHoveredSong(song.slug)}
               onLeave={() => setHoveredSong(null)}
+              journeysActive={journeysActive}
             />
           </Marker>
         ))}
@@ -472,7 +522,17 @@ export default function HejiraMap() {
 
       {/* UI overlays */}
       <JourneyToggle active={journeysActive} onToggle={handleToggle} />
-      <MapLegend visible={journeysActive} />
+      <MapLegend
+        visible={journeysActive}
+        selectedJourney={selectedJourney}
+        onSelectJourney={handleSelectJourney}
+      />
+      {journeysActive && selectedJourney && (
+        <JourneyDetailPanel
+          journey={selectedJourney}
+          onClose={() => setSelectedJourney(null)}
+        />
+      )}
 
       {/* Compass rose */}
       <div className="absolute bottom-[30px] right-[30px] z-[3] opacity-40 pointer-events-none">

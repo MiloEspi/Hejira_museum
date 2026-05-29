@@ -60,8 +60,8 @@ export default function Cuaderno({ children }: { children: ReactNode }) {
         <div
           className="relative overflow-hidden"
           style={{
-            width: "min(1400px, 94vw)",
-            height: "min(820px, 92vh)",
+            width: "min(1800px, 98vw)",
+            height: "min(840px, 90vh)",
             background:
               "radial-gradient(ellipse 80% 60% at 50% 50%, var(--paper) 0%, var(--paper-deep) 75%, var(--paper-shadow) 100%)",
             boxShadow: `

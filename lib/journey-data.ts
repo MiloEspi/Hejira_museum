@@ -9,6 +9,7 @@ export interface Journey {
   strokeDasharray: string;
   fontFamily: string;
   vibe: string;
+  description: string;
 }
 
 export const JOURNEYS: Journey[] = [
@@ -21,6 +22,8 @@ export const JOURNEYS: Journey[] = [
     strokeDasharray: "2,3",
     fontFamily: "var(--font-italiana), serif",
     vibe: "Bohemian, electric, nocturnal",
+    description:
+      "Bob Dylan's itinerant carnival of musicians swept through the Northeast in the autumn of 1975. Joni joined the tour through New England — from Montréal to the small towns of Maine — surrounded by poets, painters, and old friends. The nights were electric and chaotic, the days blurred. Sam Shepard was there. So were masks, spontaneity, and the last embers of the sixties.",
   },
   {
     slug: "guerin",
@@ -31,6 +34,8 @@ export const JOURNEYS: Journey[] = [
     strokeDasharray: "6,5",
     fontFamily: "var(--font-cormorant-garamond), serif",
     vibe: "Breakup, grey cities, farewell",
+    description:
+      "A tour through the American South with drummer John Guerin — her lover and collaborator — that slowly fell apart. The route wound from Los Angeles through desert cities and into the deep South. By Nashville the tour was cancelled. Joni kept going alone. The songs written on this stretch carry the particular weight of an ending that was also a beginning.",
   },
   {
     slug: "solo",
@@ -41,6 +46,8 @@ export const JOURNEYS: Journey[] = [
     strokeDasharray: "none",
     fontFamily: "var(--font-courier-prime), monospace",
     vibe: "Luminous solitude, contemplation",
+    description:
+      "After the Guerin tour unraveled, Joni drove alone from the Maine coast all the way to Los Angeles — the full width of the country. She stopped in Staten Island to buy a mandolin, visited Chögyam Trungpa in Boulder, drove through the Arizona desert seeing vapor trails. The solitude was not emptiness; it was the whole point. Hejira is this road.",
   },
 ];
 
