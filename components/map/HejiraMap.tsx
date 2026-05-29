@@ -153,9 +153,7 @@ export default function HejiraMap() {
     }
   }, []);
 
-  const handleMoveEnd = useCallback((pos: { coordinates: [number, number]; zoom: number }) => {
-    setPosition(pos);
-  }, []);
+
 
   const projection = useMemo(() => {
     return geoAlbers()
@@ -234,8 +232,6 @@ export default function HejiraMap() {
         <ZoomableGroup
           zoom={position.zoom}
           center={position.coordinates}
-          onMoveEnd={handleMoveEnd}
-          translateExtent={[[0, 0], [MAP_WIDTH, MAP_HEIGHT]]}
         >
           {/* Layer 0: Canada + Mexico from world atlas */}
         <Geographies geography={WORLD_TOPO_URL}>
@@ -536,7 +532,7 @@ export default function HejiraMap() {
 
         {/* Layer 5: Song markers */}
         {SONGS.map((song) => (
-          <Marker key={song.slug} coordinates={song.coords} style={{ pointerEvents: "auto" }}>
+          <Marker key={song.slug} coordinates={song.coords}>
             <SongMarker
               song={song}
               isHovered={hoveredSong === song.slug}
