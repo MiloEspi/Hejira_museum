@@ -127,7 +127,7 @@ export default function SongPageLayout({ song, content }: Props) {
         {/* Album art background — always present, low opacity */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="/photos/hejira-albumart.jpg"
+          src="/photos/Hejira_good_definition_albumart.jpg"
           alt=""
           className="song-page__hero-bg"
           aria-hidden="true"
