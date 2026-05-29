@@ -27,6 +27,7 @@ export default function JourneyDetailPanel({ journey, onClose }: Props) {
 
   return (
     <div
+      onWheel={(e) => e.stopPropagation()}
       style={{
         position: "absolute",
         top: 0,

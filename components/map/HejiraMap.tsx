@@ -122,7 +122,7 @@ function catmullRomSpline(points: [number, number][], tension = 0.5): string {
 const JOURNEY_ZOOMS: Record<string, { coordinates: [number, number]; zoom: number }> = {
   thunder: { coordinates: [-74, 43], zoom: 2.5 },
   guerin: { coordinates: [-88, 33], zoom: 2.2 },
-  solo: { coordinates: [-102, 43], zoom: 1.4 },
+  solo: { coordinates: PROJECTION_CONFIG.center, zoom: 1 },
 };
 
 export default function HejiraMap() {
@@ -156,6 +156,14 @@ export default function HejiraMap() {
 
   const handleMoveEnd = useCallback((pos: { coordinates: [number, number]; zoom: number }) => {
     setPosition(pos);
+  }, []);
+
+  const handleZoomIn = useCallback(() => {
+    setPosition((pos) => ({ ...pos, zoom: Math.min(pos.zoom * 1.5, 8) }));
+  }, []);
+
+  const handleZoomOut = useCallback(() => {
+    setPosition((pos) => ({ ...pos, zoom: Math.max(pos.zoom / 1.5, 1) }));
   }, []);
 
   const projection = useMemo(() => {
@@ -561,9 +569,38 @@ export default function HejiraMap() {
       {journeysActive && selectedJourney && (
         <JourneyDetailPanel
           journey={selectedJourney}
-          onClose={() => setSelectedJourney(null)}
+          onClose={() => {
+            setSelectedJourney(null);
+            setPosition({ coordinates: PROJECTION_CONFIG.center, zoom: 1 });
+          }}
         />
       )}
+
+      {/* Map Zoom Controls */}
+      <div className="absolute bottom-[30px] right-[120px] flex gap-[8px] z-[5]">
+        <button
+          onClick={handleZoomIn}
+          style={{
+            width: "32px", height: "32px", background: "rgba(237, 225, 200, 0.8)",
+            border: "1px solid rgba(43,29,16,0.3)", borderRadius: "50%",
+            cursor: "pointer", fontFamily: "var(--font-courier-prime)", fontSize: "18px", color: "#2b1d10"
+          }}
+          aria-label="Zoom in"
+        >
+          +
+        </button>
+        <button
+          onClick={handleZoomOut}
+          style={{
+            width: "32px", height: "32px", background: "rgba(237, 225, 200, 0.8)",
+            border: "1px solid rgba(43,29,16,0.3)", borderRadius: "50%",
+            cursor: "pointer", fontFamily: "var(--font-courier-prime)", fontSize: "18px", color: "#2b1d10"
+          }}
+          aria-label="Zoom out"
+        >
+          -
+        </button>
+      </div>
 
       {/* Compass rose */}
       <div className="absolute bottom-[30px] right-[30px] z-[3] opacity-40 pointer-events-none">
