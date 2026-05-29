@@ -102,6 +102,12 @@ export default function SongPageLayout({ song, content }: Props) {
           ← Mapa
         </Link>
         <div className="song-page__nav-center">
+          <a href="#lyrics" className="song-page__jump-link">The Song</a>
+          <a href="#story" className="song-page__jump-link">The Story</a>
+          {content.references.length > 0 && (
+            <a href="#references" className="song-page__jump-link">References</a>
+          )}
+          <a href="#gallery" className="song-page__jump-link">Photos</a>
           <span className="song-page__track-num">
             {song.trackNumber} / 9
           </span>
@@ -177,7 +183,7 @@ export default function SongPageLayout({ song, content }: Props) {
           </>
         )}
         {/* Lyrics Column */}
-        <section className="song-page__lyrics">
+        <section id="lyrics" className="song-page__lyrics">
           <h2 className="song-page__section-title">The Song</h2>
           {content.lyrics.map((section) => (
             <div key={section.id} className="song-page__lyric-section">
@@ -229,7 +235,7 @@ export default function SongPageLayout({ song, content }: Props) {
         </section>
 
         {/* Story Column */}
-        <section className="song-page__story">
+        <section id="story" className="song-page__story">
           <h2 className="song-page__section-title">The Story</h2>
           {content.storyParagraphs.map((para, i) => (
             <div
@@ -265,7 +271,7 @@ export default function SongPageLayout({ song, content }: Props) {
 
       {/* References / Expandable Cards */}
       {content.references.length > 0 && (
-        <section className="song-page__references">
+        <section id="references" className="song-page__references">
           <h2 className="song-page__section-title">References</h2>
           <p className="song-page__references-intro">
             Click on any reference to expand its details.
@@ -351,7 +357,18 @@ export default function SongPageLayout({ song, content }: Props) {
         </section>
       )}
 
-      {/* Gallery removed — photos now serve as section backgrounds */}
+      {/* Photo Gallery */}
+      <section id="gallery" className="song-page__gallery">
+        <h2 className="song-page__section-title">Gallery</h2>
+        <div className="song-page__gallery-grid">
+          {Object.values(SONG_BG_PHOTOS).map((photoSrc, idx) => (
+            <div key={idx} className="song-page__gallery-item">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={p(photoSrc)} alt="" style={{width: "100%", height: "100%", objectFit: "cover"}} />
+            </div>
+          ))}
+        </div>
+      </section>
 
       {/* Navigation Footer */}
       <footer className="song-page__footer">
