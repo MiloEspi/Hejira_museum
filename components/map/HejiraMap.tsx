@@ -6,7 +6,6 @@ import {
   Geographies,
   Geography,
   Marker,
-  ZoomableGroup,
 } from "react-simple-maps";
 import { geoAlbers } from "d3-geo";
 import { SONGS } from "@/lib/songs-data";
@@ -129,13 +128,11 @@ export default function HejiraMap() {
   const [journeysActive, setJourneysActive] = useState(false);
   const [hoveredSong, setHoveredSong] = useState<string | null>(null);
   const [selectedJourney, setSelectedJourney] = useState<JourneySlug | null>(null);
-  const [position, setPosition] = useState({ coordinates: PROJECTION_CONFIG.center, zoom: 1 });
 
   const handleToggle = useCallback(() => {
     setJourneysActive((prev) => {
       if (prev) {
         setSelectedJourney(null);
-        setPosition({ coordinates: PROJECTION_CONFIG.center, zoom: 1 });
       }
       return !prev;
     });
@@ -143,27 +140,6 @@ export default function HejiraMap() {
 
   const handleSelectJourney = useCallback((slug: JourneySlug | null) => {
     setSelectedJourney(slug);
-    if (slug && JOURNEY_ZOOMS[slug]) {
-      // Note: Because of rotation [97, 0, 0], actual coordinates must offset by 97 longitude 
-      // for the ZoomableGroup center if it doesn't account for rotation directly.
-      // But react-simple-maps ZoomableGroup works with un-rotated coordinates if projection is composed.
-      // Let's just use the real coordinates. The rotate is handled by the projection.
-      setPosition(JOURNEY_ZOOMS[slug]);
-    } else {
-      setPosition({ coordinates: PROJECTION_CONFIG.center, zoom: 1 });
-    }
-  }, []);
-
-  const handleMoveEnd = useCallback((pos: { coordinates: [number, number]; zoom: number }) => {
-    setPosition(pos);
-  }, []);
-
-  const handleZoomIn = useCallback(() => {
-    setPosition((pos) => ({ ...pos, zoom: Math.min(pos.zoom * 1.5, 8) }));
-  }, []);
-
-  const handleZoomOut = useCallback(() => {
-    setPosition((pos) => ({ ...pos, zoom: Math.max(pos.zoom / 1.5, 1) }));
   }, []);
 
   const projection = useMemo(() => {
@@ -240,13 +216,7 @@ export default function HejiraMap() {
           </linearGradient>
         </defs>
 
-        <ZoomableGroup
-          zoom={position.zoom}
-          center={position.coordinates}
-          onMoveEnd={handleMoveEnd}
-          translateExtent={[[0, 0], [MAP_WIDTH, MAP_HEIGHT]]}
-        >
-          {/* Layer 0: Canada + Mexico from world atlas */}
+        {/* Layer 0: Canada + Mexico from world atlas */}
         <Geographies geography={WORLD_TOPO_URL}>
           {({ geographies }) =>
             geographies
@@ -556,7 +526,6 @@ export default function HejiraMap() {
             />
           </Marker>
         ))}
-        </ZoomableGroup>
       </ComposableMap>
 
       {/* UI overlays */}
@@ -571,36 +540,9 @@ export default function HejiraMap() {
           journey={selectedJourney}
           onClose={() => {
             setSelectedJourney(null);
-            setPosition({ coordinates: PROJECTION_CONFIG.center, zoom: 1 });
           }}
         />
       )}
-
-      {/* Map Zoom Controls */}
-      <div className="absolute bottom-[30px] right-[120px] flex gap-[8px] z-[5]">
-        <button
-          onClick={handleZoomIn}
-          style={{
-            width: "32px", height: "32px", background: "rgba(237, 225, 200, 0.8)",
-            border: "1px solid rgba(43,29,16,0.3)", borderRadius: "50%",
-            cursor: "pointer", fontFamily: "var(--font-courier-prime)", fontSize: "18px", color: "#2b1d10"
-          }}
-          aria-label="Zoom in"
-        >
-          +
-        </button>
-        <button
-          onClick={handleZoomOut}
-          style={{
-            width: "32px", height: "32px", background: "rgba(237, 225, 200, 0.8)",
-            border: "1px solid rgba(43,29,16,0.3)", borderRadius: "50%",
-            cursor: "pointer", fontFamily: "var(--font-courier-prime)", fontSize: "18px", color: "#2b1d10"
-          }}
-          aria-label="Zoom out"
-        >
-          -
-        </button>
-      </div>
 
       {/* Compass rose */}
       <div className="absolute bottom-[30px] right-[30px] z-[3] opacity-40 pointer-events-none">
