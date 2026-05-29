@@ -39,7 +39,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 20px;
+  padding: 14px 24px;
   background: rgba(237, 225, 200, 0.72);
   backdrop-filter: blur(14px);
   border-bottom: 1px solid rgba(43, 29, 16, 0.08);
@@ -52,7 +52,7 @@
 
 .song-page__back {
   font-family: var(--font-courier-prime), monospace;
-  font-size: 11px;
+  font-size: 12px;
   letter-spacing: 0.15em;
   color: var(--ink-faded);
   text-decoration: none;
@@ -74,7 +74,7 @@
 
 .song-page__jump-link {
   font-family: var(--font-courier-prime), monospace;
-  font-size: 10px;
+  font-size: 11.5px;
   letter-spacing: 0.2em;
   color: var(--ink-faded);
   text-transform: uppercase;
@@ -88,7 +88,7 @@
 
 .song-page__track-num {
   font-family: var(--font-courier-prime), monospace;
-  font-size: 10px;
+  font-size: 11.5px;
   letter-spacing: 0.3em;
   color: var(--ink-faded);
   text-transform: uppercase;
@@ -103,11 +103,11 @@
 
 .song-page__arrow {
   font-family: var(--font-italiana), serif;
-  font-size: 16px;
+  font-size: 20px;
   color: var(--ink-faded);
   text-decoration: none;
-  width: 30px;
-  height: 30px;
+  width: 36px;
+  height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -773,14 +773,14 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  filter: blur(14px) grayscale(0.4) sepia(0.15);
-  opacity: 0.09;
+  filter: blur(8px) grayscale(0.25) sepia(0.2);
+  opacity: 0.16;
   transform: scale(1.06);
   pointer-events: none;
   z-index: 0;
-  mix-blend-mode: multiply;
-  -webkit-mask-image: linear-gradient(180deg, transparent, #000 18%, #000 82%, transparent);
-          mask-image: linear-gradient(180deg, transparent, #000 18%, #000 82%, transparent);
+  mix-blend-mode: darken;
+  -webkit-mask-image: linear-gradient(180deg, transparent, #000 12%, #000 88%, transparent);
+          mask-image: linear-gradient(180deg, transparent, #000 12%, #000 88%, transparent);
 }
 
 /* Journey-colored tint overlay on top of background photo */
